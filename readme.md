@@ -6,8 +6,15 @@ TBD
 ## Calibration and simulation
 The calibration of the model in the paper requires some data work to produce the targets for various runs of the calibration, and then a Matlab program that performs the calibrations themselves.
 
-### Folder structure
-The code is set up to expect a folder structure that mimics this repository. That is, there should be folders "Drafts", "Data", "Work", and "Code" all contained within your master folder. 
+The short recipe to replication is:
+
+1. Copy this repository to a master folder on your own computer. Leave the folder structure intact.
+2. Edit the jvmaster.do script in the Code folder to set the working directory to your master folder.
+3. Execute jvmaster.do in Stata
+4. Edit the mcmaster.m script in the Code folder to set the working directory to your master folder.
+5. Execute mcmaster.m in Matlab
+
+The output is all written to the Drafts folder. All that follows from here is detail about the programs called.
 
 ### Data and code preparation
 The Stata scripts pull summary information on urbanization and population size from a dataset of developing countries. The data files are:
