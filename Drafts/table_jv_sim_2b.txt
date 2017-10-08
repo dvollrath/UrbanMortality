@@ -1,0 +1,2 @@
+Formal congestion elasticity ($\epsilon_f$) &      1.32 & Urbanization rate in 2005 (mean 31.0\%) \tabularnewline[+0.03215in] 
+Informal congestion elasticity ($\epsilon_l$) &      0.60 & Informal share in 2005 (mean 64.2\%) \tabularnewline[+0.03215in] 
