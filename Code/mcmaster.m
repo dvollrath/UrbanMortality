@@ -3,7 +3,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%% Set the location of your master folder here %%%%
-cd /users/dietz/dropbox/project/megacity/urbanmortality
+cd /users/dietz/dropbox/project/megacity/urbanmortality/Code
 
 % Put code folder on the Matlab path
 addpath('../Code');
@@ -69,7 +69,7 @@ mctable5(fitted,Setup,Targets,name); % policy counterfactuals
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Peform robustness checks
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-run('../Code/mcrobust.m');
+%run('../Code/mcrobust.m');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Peform individual calibrations by country

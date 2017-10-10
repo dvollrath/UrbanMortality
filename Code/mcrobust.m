@@ -23,7 +23,7 @@ fprintf(f,' \\\\ \n');
 fprintf(f,'\\multicolumn{7}{c}{\\textit{Sample Changes:}} \\\\ \n');
 
 % Call the robust script written by Stata to evaluate diff samples
-run('../Work/jvextract_robust');
+run('../Work/jvextract_robust.m');
 
 % Reset to the baseline model to do sensitivity to parameters
 fprintf(f,' \\\\ \n');
@@ -120,6 +120,38 @@ Alt = Setup;
 Alt.Epsilon = [.5; .5; 1.6];
 name = 'Rural elasticity $\epsilon_r = 1.6$';
 mcrobusti(Alt,time,T,name,f,count,n);
+n = n + 1;
+
+Alt = Setup;
+Alt.Epsilon = [.5; .5; .6];
+name = 'Rural elasticity $\epsilon_r = .6$';
+mcrobusti(Alt,time,T,name,f,count,n);
+n = n + 1;
+
+Alt = Setup;
+Alt.Epsilon = [.5; .5; .4];
+name = 'Rural elasticity $\epsilon_r = .4$';
+mcrobusti(Alt,time,T,name,f,count,n);
+n = n + 1;
+
+Alt = Setup;
+Alt.Growth = [.015; .01; .01];
+name = 'Growth 1.5, 1, and 1 percent';
+mcrobusti(Alt,time,T,name,f,count,n);
+n = n + 1;
+
+Alt = Setup;
+Alt.Epsilon = [.5; .5; .4];
+Alt.Growth = [.04; .025; .025];
+name = 'Formal growth $G_f = 0.04$ and rural elas = .4';
+mcrobusti(Alt,time,T,name,f,count,n);
+n = n + 1;
+
+Alt = Setup;
+Alt.Epsilon = [.5; .3; .5];
+Alt.Growth = [0.015; 0.01; 0.01];
+name = 'Set elasticity using factor shares';
+mcrobustf(Alt,time,T,name,f,count,n);
 n = n + 1;
 
 fclose(f);   

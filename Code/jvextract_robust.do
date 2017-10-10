@@ -1,24 +1,35 @@
-***********************************************************
-* Select sample data and set values for use in calibration
-***********************************************************
+*****************************************************************
+* Prepare sample data and calculate data averages for calibration
+*****************************************************************
 	clear
 	
+	// Merge main data with demographics and flags for type of country
+	use "./data/jv_data_fit.dta" // contains full set of data
+	qui merge 1:1 country year using "./data/cbdcdrcrni.dta"
+	drop _merge
+	qui merge m:1 country using "./data/jv_flags.dta"
+	drop _merge
+	
+	// Set baseline slum shares for rich countries so they can be included
+	replace slum = 5 if slum==. & oecd==1 & year==2005
+	
+	save "./work/jv_data_fit_work.dta", replace
+	
+	// Open output file to write Matlab commands to perform calibrations
 	capture file close f_result
 	file open f_result using "./work/jvextract_robust.m", write replace
-	
-////////////////////////////////
-// Program to calc averages
-///////////////////////////////
+
+*****************************************************************
+* Declare program to calculate appropriate averages for a given
+* sample. This will be called repeatedly below.
+*****************************************************************
 capture program drop calc_pop
 program calc_pop 
 	syntax [, name(string) base(integer 1950) comp(integer 2005) slumlimit(real 30) poplimit(real 1000) urblimit(real 50) infinit(real 0.5) drop5075(real 999) drop5080(real 999) exclude(string) comm(int 99) apart(int 99)]
 	
 	// Load dataset
 	clear
-	use "./data/jv_data_fit.dta" // contains full set of data
-	qui merge 1:1 country year using "./data/cbdcdrcrni.dta"
-	drop _merge
-	qui merge m:1 country using "./data/jv_flags.dta"
+	use "./work/jv_data_fit_work.dta" // contains full set of data
 	
 	foreach X in 50 75 80 {
 		qui gen cdr`X' = cdr if year == 19`X'
@@ -135,11 +146,31 @@ end // end program to calculate values
 // Calls to calculate for different parameters
 ///////////////////////////////
 calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urblimit(20) infinit(0.5) name(Baseline)
+save "./work/jv_data_fit_sample.dta", replace // save this baseline set of countries
+
 calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urblimit(30) infinit(0.5) name(1950 Urbanization $\leq$ 30\%)
 calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urblimit(40) infinit(0.5) name(1950 Urbanization $\leq$ 40\%)
 
-calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urblimit(20) infinit(0.5) name(Max. slum share $\geq$ 20\%)
-calc_pop, base(1950) comp(2005) slumlimit(10) poplimit(1000) urblimit(20) infinit(0.5) name(Max. slum share $\geq$ 10\%)
+calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urblimit(20) infinit(0.5) name(Max. slum share $\geq$ 20\%, urb share $\leq$ 20\%)
+calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urblimit(30) infinit(0.5) name(Max. slum share $\geq$ 20\%, urb share $\leq$ 30\%)
+calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urblimit(40) infinit(0.5) name(Max. slum share $\geq$ 20\%, urb share $\leq$ 40\%)
+calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urblimit(50) infinit(0.5) name(Max. slum share $\geq$ 20\%, urb share $\leq$ 50\%)
+calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urblimit(60) infinit(0.5) name(Max. slum share $\geq$ 20\%, urb share $\leq$ 60\%)
+
+calc_pop, base(1950) comp(2005) slumlimit(10) poplimit(1000) urblimit(20) infinit(0.5) name(Max. slum share $\geq$ 10\%, urb share $\leq$ 20\%)
+calc_pop, base(1950) comp(2005) slumlimit(10) poplimit(1000) urblimit(30) infinit(0.5) name(Max. slum share $\geq$ 10\%, urb share $\leq$ 30\%)
+calc_pop, base(1950) comp(2005) slumlimit(10) poplimit(1000) urblimit(40) infinit(0.5) name(Max. slum share $\geq$ 10\%, urb share $\leq$ 40\%)
+calc_pop, base(1950) comp(2005) slumlimit(10) poplimit(1000) urblimit(50) infinit(0.5) name(Max. slum share $\geq$ 10\%, urb share $\leq$ 50\%)
+calc_pop, base(1950) comp(2005) slumlimit(10) poplimit(1000) urblimit(60) infinit(0.5) name(Max. slum share $\geq$ 10\%, urb share $\leq$ 60\%)
+
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(20) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 20\%)
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(30) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 30\%)
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(40) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 40\%)
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(50) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 50\%)
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(60) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 60\%)
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(70) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 70\%)
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(80) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 80\%)
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(90) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 90\%)
 
 calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(100) infinit(0.5) drop5080(-7) name($\Delta CDR_{50,80} \leq -7$)
 calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(100) infinit(0.5) drop5080(-12) name($\Delta CDR_{50,80} \leq -12$)
