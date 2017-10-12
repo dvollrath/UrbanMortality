@@ -12,23 +12,33 @@ addpath('../Code');
 clear; % clear matrices for clean run
 time = 55; % number of periods to simulate
 
+% Open and read calibration targets and initial values from file
+f = fopen('../Work/jvextract_robust.txt','r');
+I = textscan(f,'%s%f%f%f%f%f%f','Delimiter',',');
+CalName = I{1,1};
+CalCount = I{1,2};
+CalUrbPerc = I{1,3};
+CalInfUrbPerc = I{1,4};
+CalInitFormal = I{1,5};
+CalInitInformal = I{1,6};
+CalInitRural = I{1,7};
+fclose(f);
+
 % Targets - set up cell array with metric/value/period
-T = {'UrbPerc' 0.31 55; ...
-     'InfUrbPerc' 0.642 55};
+T = {'UrbPerc' CalUrbPerc(1,1) time; ...
+     'InfUrbPerc' CalInfUrbPerc(1,1) time};
 Targets = cell2table(T,'VariableNames', {'Metric','Value','Period'});
 
 % Initialize matrix of starting values and parameters
 % All are vectors with Formal, Informal, Rural values
 Setup = table;
-Setup.Size = [.0445; .0445; .911]; % initial percent of population
+Setup.Size = [CalInitFormal(1,1); CalInitInformal(1,1); CalInitRural(1,1)]; % initial percent of population
 Setup.CBR = [.038; .043; .043]; % initial crude birth rates
 Setup.CBRMin = [0; 0; 0]; % set possible lower bound to CBR
 Setup.PostCDR = [.015; .015; .020]; % set long-run CDR after mortality transition
 Setup.PreCDR = [.040; .040; .020]; % set initial CDR
-Setup.CDRSpeed = [1; 1; 1]; % parameter to control decay of CDR
 Setup.Growth = [.05; .025; .025]; % exogenous growth rate of welfare
 Setup.Epsilon = [.5; .5; 1.2]; % initial *guesses* for congestion elasticity
-Setup.Theta = [0; 0; 0]; % parameters for cross-location congestion
 Setup.Lambda = [0; 0; 0]; % parameters for wedges in welfare growth btwn locations
 
 % The following setup parameters are a bit of fudge, as these parameters
@@ -74,4 +84,9 @@ mctable5(fitted,Setup,Targets,name); % policy counterfactuals
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Peform individual calibrations by country
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-run('../Code/mcindividual.m');
+%run('../Code/mcindividual.m');
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Perform calibrations for historical situation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%mchistory(fitted,Setup);

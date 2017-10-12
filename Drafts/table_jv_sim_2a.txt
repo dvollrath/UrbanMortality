@@ -8,7 +8,7 @@ Post-UMT formal CDR (per 000) &        15 & Location-level data, 2000s \tabularn
 Post-UMT informal CDR (per 000) &        15 & Location-level data, 2000s \tabularnewline[+0.03215in] 
 UMT half-life &         3 & Location-level data, 1960s \tabularnewline[+0.03215in] 
 Rural congestion elasticity ($\epsilon_r$) &      1.20 & See text for details \tabularnewline[+0.03215in] 
-Urbanization rate (\%) in 1950 &       8.9 & Sample average \tabularnewline[+0.03215in] 
+Urbanization rate (\%) in 1950 &       9.3 & Sample average \tabularnewline[+0.03215in] 
 Informal share of urban areas (\%) in 1950 &      50.0 & See text for details \tabularnewline[+0.03215in] 
 Initial population size in 1950 & 1.0 & Normalization \tabularnewline[+0.03215in] 
 Informal prod./amenity growth ($G_l$) &      0.03 & See text for details \tabularnewline[+0.03215in] 

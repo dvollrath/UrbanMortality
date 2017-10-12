@@ -31,6 +31,4 @@ function E = mcrobusti(Setup,time,T,name,f,count,n)
     % Return values of fitted elasticities
     E(1) = fitted(1);
     E(2) = fitted(2);
-     
-
 end

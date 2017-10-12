@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Calibrate model to various scenarios
+% Calibrate model to various robustness scenarios - for inclusion
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 filename = sprintf('../Drafts/table_jv_rob_sample.txt');
 f = fopen(filename,'w');
@@ -93,8 +93,20 @@ mcrobusti(Alt,time,T,name,f,count,n);
 n = n + 1;
 
 Alt = Setup;
-Alt.Growth = [.04; .015; .015];
-name = 'All growth rate -1\%';
+Alt.Growth = [.05; .025; 0.015];
+name = 'Rural growth $G_r = .015$';
+mcrobusti(Alt,time,T,name,f,count,n);
+n = n + 1;
+
+Alt = Setup;
+Alt.Growth = [.04; .015; 0.025];
+name = 'Urban growth lower $G_f = 0.04$ and $G_l = 0.015$';
+mcrobusti(Alt,time,T,name,f,count,n);
+n = n + 1;
+
+Alt = Setup;
+Alt.Growth = [.04; .015; 0.015];
+name = 'All growth lower -1\%';
 mcrobusti(Alt,time,T,name,f,count,n);
 n = n + 1;
 
@@ -129,29 +141,79 @@ mcrobusti(Alt,time,T,name,f,count,n);
 n = n + 1;
 
 Alt = Setup;
+Alt.Epsilon = [.5; .5; .6];
+Alt.Fertility = [-.3; -.3; 1];
+Alt.Tau = [0; 0; 0];
+name = 'Rural elas $\epsilon_r = .6$ and endog fert.';
+mcrobusti(Alt,time,T,name,f,count,n);
+n = n + 1;
+
+Alt = Setup;
 Alt.Epsilon = [.5; .5; .4];
 name = 'Rural elasticity $\epsilon_r = .4$';
 mcrobusti(Alt,time,T,name,f,count,n);
 n = n + 1;
 
 Alt = Setup;
-Alt.Growth = [.015; .01; .01];
-name = 'Growth 1.5, 1, and 1 percent';
-mcrobusti(Alt,time,T,name,f,count,n);
-n = n + 1;
-
-Alt = Setup;
 Alt.Epsilon = [.5; .5; .4];
-Alt.Growth = [.04; .025; .025];
-name = 'Formal growth $G_f = 0.04$ and rural elas = .4';
+Alt.Fertility = [-.3; -.3; 1];
+Alt.Tau = [0; 0; 0];
+name = 'Rural elas $\epsilon_r = .4$ and endog fert.';
 mcrobusti(Alt,time,T,name,f,count,n);
 n = n + 1;
 
 Alt = Setup;
-Alt.Epsilon = [.5; .3; .5];
-Alt.Growth = [0.015; 0.01; 0.01];
-name = 'Set elasticity using factor shares';
-mcrobustf(Alt,time,T,name,f,count,n);
+Alt.Epsilon = [.5; .5; .6];
+Alt.Growth = [.04; .025; .025];
+name = 'Formal growth $G_f = 0.04$ and rural elas = .6';
+mcrobusti(Alt,time,T,name,f,count,n);
 n = n + 1;
+
+% Close main robustness file for table
+fclose(f);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Calibrate model to various robustness scenarios - not for inclusion
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+filename = sprintf('../Drafts/table_jv_rob_extra.txt');
+f = fopen(filename,'w');
+
+% Set initial parameters and options for minsearch
+initial = [Setup{'Formal','Epsilon'}, Setup{'Informal','Epsilon'}];
+options = optimset('MaxFunEvals',5000); % allow for enough iterations
+
+% Set initial row counter
+n = 1;
+
+% Baseline
+count = 41;
+Alt = Setup;
+name = 'Baseline';
+mcrobusti(Alt,time,T,name,f,count,n);
+n = n + 1;
+
+% Other urbanization samples
+fprintf(f,' \\\\ \n');
+fprintf(f,'\\multicolumn{7}{c}{\\textit{Other samples:}} \\\\ \n');
+
+% Call the robust script written by Stata to evaluate diff samples
+run('../Work/jvextract_limits.m');
+
+% Rich countries
+fprintf(f,' \\\\ \n');
+fprintf(f,'\\multicolumn{7}{c}{\\textit{Rich country samples:}} \\\\ \n');
+
+% Reset setup parameters for rich countries
+Setup.CBR = [.025; .025; .025];
+Setup.PostCDR = [.0075; .0075; .010];
+Setup.PreCDR = [.015; .015; .010];
+Setup.CDRSpeed = [1; 1; 1];
+Setup.CBRMin = Setup.PostCDR;
+Setup.Growth = [.05; .025; .025];
+Setup.UMT = [.4; 50; 0];
+Setup.Tau = [-.0002; 0; 0]; 
+
+% Call the robust script written by Stata to evaluate diff samples
+run('../Work/jvextract_rich.m');
 
 fclose(f);   

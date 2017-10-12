@@ -11,21 +11,17 @@
 	drop _merge
 	
 	// Set baseline slum shares for rich countries so they can be included
-	replace slum = 5 if slum==. & oecd==1 & year==2005
+	replace slum = 1 if slum==. & oecd==1 & year==2005 // 1% slum shares for oecd
 	
 	save "./work/jv_data_fit_work.dta", replace
 	
-	// Open output file to write Matlab commands to perform calibrations
-	capture file close f_result
-	file open f_result using "./work/jvextract_robust.m", write replace
-
 *****************************************************************
 * Declare program to calculate appropriate averages for a given
 * sample. This will be called repeatedly below.
 *****************************************************************
 capture program drop calc_pop
 program calc_pop 
-	syntax [, name(string) base(integer 1950) comp(integer 2005) slumlimit(real 30) poplimit(real 1000) urblimit(real 50) infinit(real 0.5) drop5075(real 999) drop5080(real 999) exclude(string) comm(int 99) apart(int 99)]
+	syntax [, name(string) slumvar(int 0) base(integer 1950) comp(integer 2005) slumlimit(real 30) poplimit(real 1000) urbmax(real 100) urbmin(real 0) infinit(real 0.5) drop5075(real 999) drop5080(real 999) exclude(string) comm(int 99) apart(int 99)]
 	
 	// Load dataset
 	clear
@@ -46,15 +42,29 @@ program calc_pop
 
 	// Limit sample of countries
 	quietly {
-		by country_id: egen slum_max = max(slum)
+		gen slumuse = .
+		if `slumvar'==1 {
+			replace slumuse = slum
+			replace slumuse = slum2 if slum==.
+		}
+		else if `slumvar'==2 {
+			replace slumuse = slum2
+		}
+		else {
+			replace slumuse = slum
+		}
+	
+		by country_id: egen slum_max = max(slumuse)
 		keep if slum_max>`slumlimit' // only countries with slum percent that reached at least 30% at some point
-		gen slum_mark = 1 if year==`comp' & slum~=. // mark countries with 2005 obs on slums
+		gen slum_mark = 1 if year==`comp' & slumuse~=. // mark countries with 2005 obs on slums
 		by country_id: egen slum_mark_tot = sum(slum_mark)
 		keep if slum_mark_tot==1 // only keep countries with a 2005 obs on slum
 		by country_id: egen pop_min = min(pop)
 		keep if pop_min>`poplimit' // only countries with minimum of 1mil population
 		by country_id: egen urbrate_min = min(urbrate)
-		keep if urbrate_min<`urblimit' // only countries that were very un-urbanized to start with
+		keep if urbrate_min<`urbmax' // only countries that were very un-urbanized to start with
+		keep if urbrate_min>`urbmin' // only countries that were sufficiently urban
+		
 		
 		if `drop5075'<999 {
 			keep if cdr5075<=`drop5075'
@@ -77,7 +87,7 @@ program calc_pop
 	// Generate variables measuring relative size of urban population
 	quietly {
 		gen u = urbrate/100 // urbanization in decimal form
-		gen s_inf = u*slum/100 // informal share of total population in decimal form
+		gen s_inf = u*slumuse/100 // informal share of total population in decimal form
 		gen inf_pop = s_inf*pop // total size of informal pop
 		replace inf_pop = `infinit'*u*pop if year==`base' // get baseline informal population
 		gen for_pop = u*pop - inf_pop // total size of formal pop
@@ -110,7 +120,7 @@ program calc_pop
 		local i_inf = r(mean)*`infinit'
 		local i_for = r(mean)*(1-`infinit')
 		local i_rur = 1- r(mean)
-		
+				
 		qui ameans rel_for_pop if year==`base'
 		local c_for = r(mean_g)*`i_for'
 		qui ameans rel_inf_pop if year==`base'
@@ -118,7 +128,8 @@ program calc_pop
 		qui ameans rel_rur_pop if year==`base'
 		local c_rur = r(mean_g)*`i_rur'
 		
-		file write f_result "Setup.Size = [" %9.4f (`c_for') ";" %9.4f (`c_inf') ";" %9.4f (`c_rur') "];" _n
+		file write f_result "Alt = Setup;" _n
+		file write f_result "Alt.Size = [" %9.4f (`c_for') ";" %9.4f (`c_inf') ";" %9.4f (`c_rur') "];" _n
 		
 		qui ameans rel_for_pop if year==`comp'
 		local c_for = r(mean_g)*`i_for'
@@ -136,47 +147,77 @@ program calc_pop
 		file write f_result "T = {'UrbPerc'" %9.4f (`c_urb') " 55; 'InfUrbPerc' " %9.4f (`c_inf') " 55};" _n
 		file write f_result `"name = '`name''; "' _n
 		file write f_result "count = `c';" _n
-		file write f_result "mcrobusti(Setup,time,T,name,f,count,n);" _n
+		file write f_result "mcrobusti(Alt,time,T,name,f,count,n);" _n
 		file write f_result "n = n+1;" _n
 	}
 	file write f_result _n
+	
+	file write f_text "`name', `c', " %9.4f (`c_urb') "," %9.4f (`c_inf') "," %9.4f (`i_for') "," %9.4f (`i_inf') ///
+		"," %9.4f (`i_rur') _n
 end // end program to calculate values	
 	
-////////////////////////////////
-// Calls to calculate for different parameters
-///////////////////////////////
-calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urblimit(20) infinit(0.5) name(Baseline)
+*****************************************************************
+* Call program to write Matlab commands for basic robustness
+*****************************************************************
+capture file close f_result
+file open f_result using "./work/jvextract_robust.m", write replace
+capture file close f_text
+file open f_text using "./work/jvextract_robust.txt", write replace
+
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(20) infinit(0.5) name(Baseline)
 save "./work/jv_data_fit_sample.dta", replace // save this baseline set of countries
 
-calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urblimit(30) infinit(0.5) name(1950 Urbanization $\leq$ 30\%)
-calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urblimit(40) infinit(0.5) name(1950 Urbanization $\leq$ 40\%)
+calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urbmax(20) infinit(0.5) name(1950 Urbanization $\leq$ 20\%)
+calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urbmax(30) infinit(0.5) name(1950 Urbanization $\leq$ 30\%)
+calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urbmax(40) infinit(0.5) name(1950 Urbanization $\leq$ 40\%)
+calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urbmax(20) infinit(0.5) name(Max. slum share $\geq$ 20\%)
+calc_pop, base(1950) comp(2005) slumlimit(10) poplimit(1000) urbmax(20) infinit(0.5) name(Max. slum share $\geq$ 10\%)
 
-calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urblimit(20) infinit(0.5) name(Max. slum share $\geq$ 20\%, urb share $\leq$ 20\%)
-calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urblimit(30) infinit(0.5) name(Max. slum share $\geq$ 20\%, urb share $\leq$ 30\%)
-calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urblimit(40) infinit(0.5) name(Max. slum share $\geq$ 20\%, urb share $\leq$ 40\%)
-calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urblimit(50) infinit(0.5) name(Max. slum share $\geq$ 20\%, urb share $\leq$ 50\%)
-calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urblimit(60) infinit(0.5) name(Max. slum share $\geq$ 20\%, urb share $\leq$ 60\%)
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(100) infinit(0.5) drop5080(-7) name($\Delta CDR_{50-80} \leq -7$)
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(100) infinit(0.5) drop5080(-12) name($\Delta CDR_{50-80} \leq -12$)
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(100) infinit(0.5) drop5080(-16) name($\Delta CDR_{50-80} \leq -16$)
 
-calc_pop, base(1950) comp(2005) slumlimit(10) poplimit(1000) urblimit(20) infinit(0.5) name(Max. slum share $\geq$ 10\%, urb share $\leq$ 20\%)
-calc_pop, base(1950) comp(2005) slumlimit(10) poplimit(1000) urblimit(30) infinit(0.5) name(Max. slum share $\geq$ 10\%, urb share $\leq$ 30\%)
-calc_pop, base(1950) comp(2005) slumlimit(10) poplimit(1000) urblimit(40) infinit(0.5) name(Max. slum share $\geq$ 10\%, urb share $\leq$ 40\%)
-calc_pop, base(1950) comp(2005) slumlimit(10) poplimit(1000) urblimit(50) infinit(0.5) name(Max. slum share $\geq$ 10\%, urb share $\leq$ 50\%)
-calc_pop, base(1950) comp(2005) slumlimit(10) poplimit(1000) urblimit(60) infinit(0.5) name(Max. slum share $\geq$ 10\%, urb share $\leq$ 60\%)
-
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(20) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 20\%)
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(30) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 30\%)
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(40) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 40\%)
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(50) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 50\%)
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(60) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 60\%)
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(70) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 70\%)
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(80) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 80\%)
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(90) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 90\%)
-
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(100) infinit(0.5) drop5080(-7) name($\Delta CDR_{50,80} \leq -7$)
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(100) infinit(0.5) drop5080(-12) name($\Delta CDR_{50,80} \leq -12$)
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urblimit(100) infinit(0.5) drop5080(-16) name($\Delta CDR_{50,80} \leq -16$)
-
-calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urblimit(20) infinit(0.5) name(ex-China and India) exclude(China India)
-calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urblimit(20) infinit(0.5) comm(1) name(ex-Communist)
+calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urbmax(20) infinit(0.5) name(ex-China and India) exclude(China India)
+calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urbmax(20) infinit(0.5) comm(1) name(ex-Communist)
 
 capture file close f_result
+capture file close f_text
+
+*****************************************************************
+* Call program to write Matlab commands for differences in urban/slum shares
+*****************************************************************
+capture file close f_result
+file open f_result using "./work/jvextract_limits.m", write replace
+capture file close f_text
+file open f_text using "./work/jvextract_limits.txt", write replace
+calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urbmax(20) infinit(0.5) name(Max. slum share $\geq$ 20\%, urb share $\leq$ 20\%)
+calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urbmax(30) infinit(0.5) name(Max. slum share $\geq$ 20\%, urb share $\leq$ 30\%)
+calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urbmax(40) infinit(0.5) name(Max. slum share $\geq$ 20\%, urb share $\leq$ 40\%)
+calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urbmax(50) infinit(0.5) name(Max. slum share $\geq$ 20\%, urb share $\leq$ 50\%)
+
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(20) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 20\%)
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(30) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 30\%)
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(40) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 40\%)
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(50) infinit(0.5) name(Max. slum share $\geq$ 0\%, urb share $\leq$ 50\%)
+
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(20) infinit(0.5) slumvar(0) name(Use slum var, slum $\geq$ 0\%, urb share $\leq$ 20\%)
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(20) infinit(0.5) slumvar(1) name(Use slum2 for miss, slum $\geq$ 0\%, urb share $\leq$ 20\%)
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(20) infinit(0.5) slumvar(2) name(Use slum2 var, slum $\geq$ 0\%, urb share $\leq$ 20\%)
+capture file close f_result
+capture file close f_text
+
+*****************************************************************
+* Call program to write Matlab commands for rich countries
+*****************************************************************
+capture file close f_result
+file open f_result using "./work/jvextract_rich.m", write replace
+capture file close f_text
+file open f_text using "./work/jvextract_rich.txt", write replace
+
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmin(40) infinit(0.2) name(Urb share $\geq$ 40\%, no slum min)
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmin(50) infinit(0.2) name(Urb share $\geq$ 50\%, no slum min)
+calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmin(60) infinit(0.2) name(Urb share $\geq$ 60\%, no slum min)
+
+capture file close f_result
+capture file close f_text
+

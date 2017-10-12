@@ -1,0 +1,8 @@
+\emph{Observed data:} &      12.5 &      40.0 & 1.0 &      15.2 & n/a &      30.0 & 1.0 &      18.6 & n/a \tabularnewline[+0.015in] \cline{1-10} 
+\noalign{\smallskip} \multicolumn{10}{l}{\emph{Calibrated model:}} \tabularnewline[+0.015in] 
+\noalign{\smallskip}         1. With UMT &      12.5 &      41.2 & 1.0 &      16.3 &      50.0 &      36.7 & 1.0 &      12.0 & 1.00 \tabularnewline[+0.015in] 
+\noalign{\smallskip}         2. Without UMT &      12.5 &      37.4 & 1.0 &      10.0 &      50.0 &      28.7 & 1.0 &       5.8 &      1.37 \tabularnewline[+0.015in] 
+\noalign{\smallskip}         3. With UMT, $\beta = 0$ &      12.5 &      41.2 & 1.0 &      20.3 &      50.0 &      42.2 & 1.0 &      17.1 &      0.71 \tabularnewline[+0.015in] 
+\noalign{\smallskip}         4. With UMT, $\epsilon_i = \overline{\epsilon}$ &      12.5 &      48.9 & 1.0 &      20.0 &      50.0 &       7.8 & 1.0 &       3.1 &      1.39 \tabularnewline[+0.015in] 
+\noalign{\smallskip}         5. W/o UMT, constant fertility &      12.5 &      36.8 & 1.0 &       8.8 &      50.0 &      26.4 & 1.0 &       4.7 &      1.56 \tabularnewline[+0.015in] 
+\noalign{\smallskip}         6. W/o UMT, endogenous fertility &      12.5 &      35.5 & 1.0 &       5.8 &      50.0 &      19.6 & 1.0 &       2.3 &      2.38 \tabularnewline[+0.015in] 

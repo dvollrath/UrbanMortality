@@ -1,0 +1,7 @@
+1. \emph{Observed data:} & 12.5 & 50.0 & 1.0 & 40.0 & 30.0 & 7.0 & 50.0 & 20.0 & 12.9 \tabularnewline[+0.015in] \cline{1-10} 
+\noalign{\smallskip} 2. Calibrated model, exog. fert. &      12.5 &      50.0 & 1.0 &      40.2 &      34.7 &      14.5 &      54.5 &      22.1 &      28.9 \tabularnewline[+0.015in] 
+\noalign{\smallskip} 3. Calibrated model, exog. fert., fast UMT &      12.5 &      50.0 & 1.0 &      42.8 &      41.3 &      20.8 &      56.2 &      28.4 &      42.1 \tabularnewline[+0.015in] 
+\noalign{\smallskip} 4. Calibrated model, exog. fert., fast UMT, large UMT &      12.5 &      50.0 & 1.0 &      50.2 &      53.2 &      31.7 &      63.0 &      42.6 &      72.2 \tabularnewline[+0.015in] 
+\noalign{\smallskip} 5. Calibrated model, endog. fert. &      12.5 &      50.0 & 1.0 &      37.8 &      25.1 &       8.6 &      53.4 &      15.2 &      18.2 \tabularnewline[+0.015in] 
+\noalign{\smallskip} 6. Calibrated model, endog. fert., fast UMT &      12.5 &      50.0 & 1.0 &      41.2 &      36.3 &      16.1 &      55.3 &      24.5 &      33.7 \tabularnewline[+0.015in] 
+\noalign{\smallskip} 7. Calibrated model, endog. fert., fast UMT, large UMT &      12.5 &      50.0 & 1.0 &      51.9 &      56.7 &      38.5 &      65.7 &      50.3 &     107.4 \tabularnewline[+0.015in] 

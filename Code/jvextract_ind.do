@@ -7,6 +7,11 @@
 	file open f_result using "./work/jvextract_individual.m", write replace
 	
 	use "./work/jv_data_fit_sample.dta" // contains all the countries
+	
+	// These two countries do not get converging results in the calibration
+	//drop if country=="Sudan"
+	drop if country=="Sierra Leone"
+
 	replace country = subinstr(country,"'","",.)
 	
 	local i = 1
