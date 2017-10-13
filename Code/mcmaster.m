@@ -14,25 +14,30 @@ time = 55; % number of periods to simulate
 
 % Open and read calibration targets and initial values from file
 f = fopen('../Work/jvextract_robust.txt','r');
-I = textscan(f,'%s%f%f%f%f%f%f','Delimiter',',');
-CalName = I{1,1};
-CalCount = I{1,2};
-CalUrbPerc = I{1,3};
-CalInfUrbPerc = I{1,4};
-CalInitFormal = I{1,5};
-CalInitInformal = I{1,6};
-CalInitRural = I{1,7};
+I = textscan(f,'%s%f%f%f%f%f%f%f%f%f','Delimiter',',');
+Cal = table;
+Cal.Name = I{1,1};
+Cal.Count = I{1,2};
+Cal.UrbPerc = I{1,3};
+Cal.InfUrbPerc = I{1,4};
+Cal.InitFormal = I{1,5};
+Cal.InitInformal = I{1,6};
+Cal.InitRural = I{1,7};
+Cal.RelUrban = I{1,8};
+Cal.RelInformal = I{1,9};
+Cal.RelRural = I{1,10};
 fclose(f);
 
 % Targets - set up cell array with metric/value/period
-T = {'UrbPerc' CalUrbPerc(1,1) time; ...
-     'InfUrbPerc' CalInfUrbPerc(1,1) time};
+T = {'UrbPerc' Cal{1,'UrbPerc'} time; ...
+     'InfUrbPerc' Cal{1,'InfUrbPerc'} time};
 Targets = cell2table(T,'VariableNames', {'Metric','Value','Period'});
 
 % Initialize matrix of starting values and parameters
 % All are vectors with Formal, Informal, Rural values
 Setup = table;
-Setup.Size = [CalInitFormal(1,1); CalInitInformal(1,1); CalInitRural(1,1)]; % initial percent of population
+Setup.Size = [Cal{1,'InitFormal'}; Cal{1,'InitInformal'}; Cal{1,'InitRural'}]; % initial percent of population
+Setup.Relative = [Cal{1,'RelUrban'}; Cal{1,'RelInformal'}; Cal{1,'RelRural'}]; % relative size in last period
 Setup.CBR = [.038; .043; .043]; % initial crude birth rates
 Setup.CBRMin = [0; 0; 0]; % set possible lower bound to CBR
 Setup.PostCDR = [.015; .015; .020]; % set long-run CDR after mortality transition
@@ -69,24 +74,20 @@ fitted % print out calibrated elasticities
 name = 'sim';
 mctable2(fitted,Setup,name); % calibration parameters
 mctable3(fitted,Setup,time,Targets,name); % comparison of scenarios
-
-comp1 = 100; % first period of comparison
-comp2 = 150; % second period of comparison
-mctable4(fitted,Setup,name,comp1,comp2); % long run outcomes
-
 mctable5(fitted,Setup,Targets,name); % policy counterfactuals
+%mcrobust(Cal,time,Setup,name); % perform robustness checks
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Peform robustness checks
+% Run for modern rich countries
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%run('../Code/mcrobust.m');
+%mcrich(Setup,time,'rich');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Peform individual calibrations by country
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%run('../Code/mcindividual.m');
+%mcindividual(Setup,time,'ind');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Perform calibrations for historical situation
+% Run for historical rich countries
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %mchistory(fitted,Setup);

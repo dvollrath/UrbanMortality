@@ -1,126 +1,86 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Calibrate model to individual country data
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-filename = sprintf('../Drafts/table_jv_individual.txt');
-f = fopen(filename,'w');
-
-% Set initial parameters and options for minsearch
-initial = [Setup{'Formal','Epsilon'}, Setup{'Informal','Epsilon'}];
-options = optimset('MaxFunEvals',5000); % allow for enough iterations
-
-% Set initial row counter
-n = 1;
-
-% Baseline
-count = 41;
-Alt = Setup;
-name = 'Baseline';
-mcrobusti(Alt,time,T,name,f,count,n);
-n = n + 1;
-
-% Sample changes
-fprintf(f,' \\\\ \n');
-fprintf(f,'\\multicolumn{7}{c}{\\textit{Individual Calibrations:}} \\\\ \n');
-
-% Run the script written by Stata that calibrates for each country
-% As part of these calls, the values of elasticities are accumulated in a
-% matrix called 'Eps'
-run('../Work/jvextract_individual');
-
-% Run with median and mean
-Setup.Size = [.0445; .0445; .911]; % reset to mean urbanization initial conditions
-
-fitted = median(Eps); % use median of the accumulated elasticities
-R = mcfix(time,fitted,Setup);
-Alt = Setup; 
-Alt.PostCDR = Alt.PreCDR; % alt has no difference in pre/post CDR
-S = mcfix(time,fitted,Alt); % solve the model without UMT
-fprintf(f,'%9.0f. %s & %9.0f & %9.1f & %9.1f & %9.2f & %9.3f & %9.3f \\\\ \n', ...
-        n, ...
-        'Median elasticities', ...
-        1, ...
-        100*S{time,'UrbPerc'} - 100*R{time,'UrbPerc'}, ...
-        100*S{time,'InfUrbPerc'} - 100*R{time,'InfUrbPerc'}, ...
-        S{time,'Welfare'}/R{time,'Welfare'}, ...
-        fitted(1), fitted(2));
-
-n = n+1;
-fitted = mean(Eps);
-R = mcfix(time,fitted,Setup);
-Alt = Setup; 
-Alt.PostCDR = Alt.PreCDR; % alt has no difference in pre/post CDR
-S = mcfix(time,fitted,Alt); % solve the model without UMT
-fprintf(f,'%9.0f. %s & %9.0f & %9.1f & %9.1f & %9.2f & %9.3f & %9.3f \\\\ \n', ...
-        n, ...
-        'Mean elasticities', ...
-        1, ...
-        100*S{time,'UrbPerc'} - 100*R{time,'UrbPerc'}, ...
-        100*S{time,'InfUrbPerc'} - 100*R{time,'InfUrbPerc'}, ...
-        S{time,'Welfare'}/R{time,'Welfare'}, ...
-        fitted(1), fitted(2));
-
-n = n + 1;
-Esort = sortrows(Eps,1);  % sort by formal   
-fitted = mean(Esort(1:30,:)); % only the 30 lowest formal elasticities
-R = mcfix(time,fitted,Setup);
-Alt = Setup; 
-Alt.PostCDR = Alt.PreCDR; % alt has no difference in pre/post CDR
-S = mcfix(time,fitted,Alt); % solve the model without UMT
-fprintf(f,'%9.0f. %s & %9.0f & %9.1f & %9.1f & %9.2f & %9.3f & %9.3f \\\\ \n', ...
-        n, ...
-        'Lowest 30 Formal', ...
-        1, ...
-        100*S{time,'UrbPerc'} - 100*R{time,'UrbPerc'}, ...
-        100*S{time,'InfUrbPerc'} - 100*R{time,'InfUrbPerc'}, ...
-        S{time,'Welfare'}/R{time,'Welfare'}, ...
-        fitted(1), fitted(2));
-
-n = n + 1;    
-Esort = sortrows(Eps,1);  % sort by formal   
-fitted = mean(Esort(11:40,:)); % only the 30 highest formal elasticities
-R = mcfix(time,fitted,Setup);
-Alt = Setup; 
-Alt.PostCDR = Alt.PreCDR; % alt has no difference in pre/post CDR
-S = mcfix(time,fitted,Alt); % solve the model without UMT
-fprintf(f,'%9.0f. %s & %9.0f & %9.1f & %9.1f & %9.2f & %9.3f & %9.3f \\\\ \n', ...
-        n, ...
-        'Highest 30 Formal', ...
-        1, ...
-        100*S{time,'UrbPerc'} - 100*R{time,'UrbPerc'}, ...
-        100*S{time,'InfUrbPerc'} - 100*R{time,'InfUrbPerc'}, ...
-        S{time,'Welfare'}/R{time,'Welfare'}, ...
-        fitted(1), fitted(2));
-
-n = n + 1;    
-Esort = sortrows(Eps,2);  % sort by informal   
-fitted = mean(Esort(1:30,:)); % only the 30 lowest informal elasticities
-R = mcfix(time,fitted,Setup);
-Alt = Setup; 
-Alt.PostCDR = Alt.PreCDR; % alt has no difference in pre/post CDR
-S = mcfix(time,fitted,Alt); % solve the model without UMT
-fprintf(f,'%9.0f. %s & %9.0f & %9.1f & %9.1f & %9.2f & %9.3f & %9.3f \\\\ \n', ...
-        n, ...
-        'Lowest 30 Informal', ...
-        1, ...
-        100*S{time,'UrbPerc'} - 100*R{time,'UrbPerc'}, ...
-        100*S{time,'InfUrbPerc'} - 100*R{time,'InfUrbPerc'}, ...
-        S{time,'Welfare'}/R{time,'Welfare'}, ...
-        fitted(1), fitted(2));    
-
-n = n + 1;    
-Esort = sortrows(Eps,2);  % sort by informal   
-fitted = mean(Esort(11:40,:)); % only the 30 highest informal elasticities
-R = mcfix(time,fitted,Setup);
-Alt = Setup; 
-Alt.PostCDR = Alt.PreCDR; % alt has no difference in pre/post CDR
-S = mcfix(time,fitted,Alt); % solve the model without UMT
-fprintf(f,'%9.0f. %s & %9.0f & %9.1f & %9.1f & %9.2f & %9.3f & %9.3f \\\\ \n', ...
-        n, ...
-        'Highest 30 Informal', ...
-        1, ...
-        100*S{time,'UrbPerc'} - 100*R{time,'UrbPerc'}, ...
-        100*S{time,'InfUrbPerc'} - 100*R{time,'InfUrbPerc'}, ...
-        S{time,'Welfare'}/R{time,'Welfare'}, ...
-        fitted(1), fitted(2));    
+function mcindividual(Setup,time,name)
     
-fclose(f);   
+    % Open and read calibration targets and initial values from file
+    f = fopen('../Work/jvextract_individual.txt','r');
+    I = textscan(f,'%s%f%f%f%f%f%f','Delimiter',',');
+    Cal = table;
+    Cal.Name = I{1,1};
+    Cal.Count = I{1,2};
+    Cal.UrbPerc = I{1,3};
+    Cal.InfUrbPerc = I{1,4};
+    Cal.InitFormal = I{1,5};
+    Cal.InitInformal = I{1,6};
+    Cal.InitRural = I{1,7};
+    fclose(f);
+    
+    filename = sprintf('../Drafts/table_jv_robust_%s.txt',name);
+    f = fopen(filename,'w');
+    csvname = sprintf('../Drafts/table_jv_robust_%s.csv',name);
+    g = fopen(csvname,'w');
+    fprintf(f,'\\multicolumn{7}{c}{\\textit{Individual countries:}} \\\\ \n');
+    
+    Alt = Setup;
+    
+    for j = 1:height(Cal) % for every row in the calibration scenarios
+        % Set targets for scenario
+        T = {'UrbPerc' Cal{j,'UrbPerc'} time; ...
+                'InfUrbPerc' Cal{j,'InfUrbPerc'} time};
+       
+        % Set initial conditions for scenario
+        Alt.Size = [Cal{j,'InitFormal'}; Cal{j,'InitInformal'}; Cal{j,'InitRural'}];
+        % Call routine to calibrate and write results of scenario
+        name = char(Cal{j,'Name'})
+        E = mcrobusti(Setup,time,T,name,f,Cal{j,'Count'},j);
+        Eps(j,1) = E(1); % save formal elasticity
+        Eps(j,2) = E(2); % save informal elasticity
+        fprintf(g,'%s, %9.3f, %9.3f \n', name, E(1), E(2));
+    end
+    
+    fclose(g); % close csv file
+    n = j+1; % set counter for remaining rows
+    
+    fitted = median(Eps); % use median of the accumulated elasticities
+    count = height(Cal);
+    name = 'Median elasticities';
+    mcrobustj(Setup,time,fitted,name,f,count,n)
+    n = n+1;
+    
+    fitted = mean(Eps); % use median of the accumulated elasticities
+    count = height(Cal);
+    name = 'Mean elasticities';
+    mcrobustj(Setup,time,fitted,name,f,count,n)
+    n = n+1;
+    
+    Esort = sortrows(Eps,1);  % sort by formal   
+    fitted = mean(Esort(1:30,:)); % only the 30 lowest formal elasticities
+    count = 30;
+    name = 'Lowest 30 formal';
+    mcrobustj(Setup,time,fitted,name,f,count,n)
+    n = n+1;
+    
+    Esort = sortrows(Eps,-1);  % sort by formal   
+    fitted = mean(Esort(1:30,:)); % only the 30 highest formal elasticities
+    count = 30;
+    name = 'Highest 30 formal';
+    mcrobustj(Setup,time,fitted,name,f,count,n)
+    n = n+1;
+    
+    Esort = sortrows(Eps,2);  % sort by informal   
+    fitted = mean(Esort(1:30,:)); % only the 30 lowest informal elasticities
+    count = 30;
+    name = 'Lowest 30 informal';
+    mcrobustj(Setup,time,fitted,name,f,count,n)
+    n = n+1;
+    
+    Esort = sortrows(Eps,-2);  % sort by informal   
+    fitted = mean(Esort(1:30,:)); % only the 30 highest informal elasticities
+    count = 30;
+    name = 'Highest 30 informal';
+    mcrobustj(Setup,time,fitted,name,f,count,n)
+     
+    fclose(f);  
+
+end

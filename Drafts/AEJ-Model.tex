@@ -1,0 +1,131 @@
+\documentclass[10pt]{article}
+\input{/Users/dietz/Dropbox/Tools/article.tex}
+
+\begin{document}
+\onehalfspacing 
+
+\subsection{Individual utility}
+Let individual utility be described by the following
+\begin{equation}
+    V_j = \omega_c \ln c_j + \omega_h \ln h_j + \omega_q \ln Q_j + \omega_d \ln (1/CDR_j).
+\end{equation}
+where $c_j$ is consumption of non-housing goods and services, and $h_j$ is consumption of housing services. The preference weights $\omega_c$ and $\omega_h$ fulfill, without loss of generality, $\omega_c + \omega_h = 1$. 
+
+The amenity value $Q_j$ and the crude death rate $CDR_j$ are taken as given by an individual in location $j$. They choose, however, the amounts of $c_j$ and $h_j$ to purchase.  The budget constraint facing an individual in location $j$ is
+\begin{equation}
+    w_j = c_j + r_j h_j
+\end{equation}
+where $r_j$ is the rental price of housing (relative to consumption goods), and $w_j$ is the wage. Optimizing over consumption and housing, we get that $c_j = \omega_c w_j$ and $h_j = \omega_h w_j/r_j$. This results in utility of
+\begin{equation}
+    V_j = \ln w_j - \omega_h \ln r_j + \omega_q \ln Q_j + \omega_d \ln (1/CDR_j) + \Omega,
+\end{equation}
+where $\Omega = \omega_c \ln \omega_c + \omega_h \ln \omega_h$. 
+
+For our purposes, we care about the growth rate of utility in each location, which is given by
+\begin{equation}
+    \hat{V}_j = \hat{w}_j - \omega_h \hat{r}_j + \omega_q \hat{Q}_j - \omega_d \hat{CDR}_j.
+\end{equation}
+We can evaluate each of these separate terms to find the effect of population growth on utility growth.
+
+\textbf{Wages:} To determine the wage in a given location, we assume a production function of the form
+\begin{equation}
+    Y_j = A_j K_j^{\alpha_j} X_j^{\beta_j} N_j^{1 - \alpha_j - \beta_j}
+\end{equation}
+where $A_j$ is productivity, $K_j$ is capital, and $X_j$ is land. Note that the shares $\alpha_j$ and $\beta_j$ are unique to a given location. Assuming that labor earns its marginal product, the wage in location $j$ is given by
+\begin{equation}
+    w_j = {1 - \alpha_j - \beta_j} A_j K_j^{\alpha_j} X_j^{\beta_j} N_j^{- \alpha_j - \beta_j}.
+\end{equation}
+We can allow explicitly for agglomeration effects by letting productivity be a function of the labor force, as in
+\begin{equation}
+    A_j = B_j N_j^{\gamma_j}
+\end{equation}
+where $B_j$ is the inherent productivity in location $j$, and $\gamma_j>0$ captures the agglomeration effect in location $j$. 
+
+With this specification for productivity, and the expression for the wage, the growth rate of the wage is given by
+\begin{equation}
+    \hat{w}_j = \hat{a}^w_j + (\gamma_j - \alpha_j - \beta_j)\hat{N}_j,
+\end{equation}
+where $\hat{a}^w_j = \hat{B}_j + \alpha_j \hat{K}_j$ is the growth of productivity and capital that is independent of the growth rate in the labor force. The effect of growth in the labor force may be positive or negative, depending on how big the agglomeration effects ($\gamma_j$) are relative to the importance of capital and land in production ($\alpha_j + \beta_j$).
+
+In terms of our baseline model, we can write the above as
+\begin{equation}
+    \hat{w}_j = \hat{a}^w_j + \epsilon^w_j \hat{N}_j,
+\end{equation}
+where $\epsilon^w_j = \gamma_j - \alpha_j - \beta_j$ is the elasticity of the wage with respect to population size.
+
+\textbf{Housing:} The second term in utility growth involves the rental price of housing. Given some limitations on housing due to land constraints and/or regulations, then it should be the case that rents are rising with $N_j$. We could write this in a reduced form as
+\begin{equation}
+    \hat{r}_j = \hat{a}^r_j \epsilon_j^h \hat{N}_j
+\end{equation}
+where $\epsilon^h_j$ is the elasticity of rents (housing price) with respect to population size. The value $\hat{a}^r_j$ is exogenous growth in rental rates in location $j$ for any reason unrelated to population size. 
+
+\textbf{Amenities:} The third term in utility growth involves amenties. Assuming some effect of population size on the quantity (or implicit value) of amenities available, then we could write, again in reduced form,
+\begin{equation}
+    \hat{Q}_j = \hat{a}^q_j + \epsilon^q_j \hat{N}_j.
+\end{equation}
+Here, $\hat{a}^q_j$ is exogenous growth in the value of amenities, and $\epsilon^g_j$ is the elasticity of amenities with respect to population size. 
+
+\textbf{Crude death rate:} As stated in the main paper, we are taking the growth of crude death rates to be exogenous, and unrelated to population size.
+
+\textbf{Reduced form welfare growth:} Combining the information about the different components of utility growth, we can write
+\begin{equation}
+    \hat{V}_j = G_j - \epsilon_j \hat{N}_j - \omega_d \hat{CDR}_j
+\end{equation}
+where 
+\begin{equation}
+    G_j = \hat{a}^w_j - \omega_h \hat{a}^r_j + \omega_q \hat{a}^q_j
+\end{equation}
+is the exogenous growth in wages, rents, and amenities, where each are weighted as in the utility function. Similarly, the combined elasticity term, $\epsilon_j$ is
+\begin{eqnarray}
+    \epsilon_j &=& \epsilon^w_j - \omega_h \epsilon^h_j + \omega_q \epsilon^q_j \\
+               &=& \gamma_j - \alpha_j - \beta_j - \omega_h \epsilon^h_j + \omega_q \epsilon^q_j \label{EQN_epsilon}
+\end{eqnarray}
+where the second line shows the explicit role of agglomeration effects ($\gamma_j$) and the production function parameters ($\alpha_j$ and $\beta_j$) on the elasticity. WHile the value of $\gamma_j$ is expected to be positive, note that the rest of these terms would act to make $\epsilon_j$ negative. The values of $\alpha_j$ and $\beta_j$ indicate how quickly wages decline with the number of workers. The relationship of rents to population size is presumably positive, so the term $\omega_h \epsilon^h_j$ is positive, and this is subtracted
+
+\subsection{Parameter values}
+The expression in (\ref{EQN_epsilon}) shows us what explicit types of information we need to quantify the aggregate elasticity of welfare with respect to population size. For each in turn, we can evaluate them based on outside literature. Ideally, we would be able to provide a separate estimate of the parameter by location, although as we will describe below, this will not always be feasible.
+
+\textbf{Agglomeration effects:} The value of $\gamma_j$ has been estimated XXXXX, and appears to have a maximum value of $\gamma$
+
+\textbf{Factor shares:} The values of $\alpha_j$ and $\beta_j$ (which capture the importance of capital and land in production in location $j$, respectively), can be estimated from factor share information. Individually, $\alpha_j$ and $\beta_j$ would be equal to the factor share of capital and land, assuming factor markets are competitive. Alternatively, their sum, $\alpha_j + \beta_j$, could be recovered if we know the \textit{labor} share in a location. 
+
+The major issue here is that factor shares are not reported by location, but typically only by sector. So in order to leverage factor share information, we first have to take some position on what sectors belong to which locations. Of course, many of these sectors operate in all locations (i.e. retail) so there is not a one-to-one mapping. Rather, we think of the locations as having different weights on which sectors are relatively important. 
+
+In the rural location, the agriculture is obviously going to be the dominant sector, with smaller weights on manufacturing and services activities. For the formal sector, we believe that the factor shares will be driven by sectors involving heavy manufacturing (i.e. chemicals or equipment), wholesale trade, information, and services like finance. For the informal sector, the factor shares will depend mainly on sectors like light manufacturing (i.e. textiles), retail and/or commerce, and personal services. 
+
+Valentinyi and Herrendorf (2008) provide estimates of the combined land and capital shares, $\alpha_j + \beta_j$, for several broad sub-sectors of the U.S. economy. In agriculture, this share is 0.54, manufacturing consumption has a share of 0.40, equipment investment a share of 0.34, construction a share of 0.21, and services a share of 0.34. 
+
+Young (2010) looks at labor shares at a more disaggregate level for the United States, and over a longer period of time, but does not make the same adjustments for proprietors income that Valentinyia nd Herrendorf do. With that caveat in mind, his evidence indicates that sectors we consider to be more heavily represented in informal locations have lower values of $\alpha_j + \beta_j$. Specifically, for general services the labor share is 0.689, indicating that the $\alpha + \beta$ here is about .311. In contrast, for finance the labor share is 0.444, for $\alpha+\beta$
+
+\textbf{Rents:} For the effect of renta
+
+\textbf{Amenities:} For amenities, we need to establish both the utility weight $\omega_q$, as well as their elasticity with respect to population. 
+
+
+\section{Historical outcomes}
+
+As an additional validation check on our calibrated model, we evaluate its ability to explain historical urbanization in Europe. 
+
+
+Row 1 of Table XX shows average data on urbanization and informal rates for a set of XX European countries from 1800, 1900, and 1940. As can be seen, the urbanization rate rises from 12.5\% to 50\% in the century from 1800 to 1900, and then this rises further to 50\% by 1940. At the same time, the informal share drops from an (assumed) share of 50\% in 1800 to 30\% by 1900, and 20\% in 1940. This occurs at the same time that the absolute size of the urban population was rising, so that it was seven times higher in 1900 than in 1800, and almost 13 times higher in 1940. 
+
+
+
+\begin{table}[htb]
+\begin{center}
+\begin{footnotesize}
+\caption{\textbf{HISTORICAL OUTCOMES USING THE CALIBRATED MODEL, 1800-1940}} \label{tab_longrun}
+\begin{tabular}{lccccccccc}
+\midrule
+         & \multicolumn{3}{c}{1800:} & \multicolumn{3}{c}{1900:} & \multicolumn{3}{c}{1940:} \\ \cmidrule(lr){2-4} \cmidrule(lr){5-7} \cmidrule(lr){8-10}
+         & Urb. & Inf. & Urb. & Urb. & Inf. & Urb. & Urb. & Inf. & Urb. \\
+Scenario & Rate & Rate & Size & Rate & Rate & Size & Rate & Rate & Size  \\ \midrule
+\input{table_jv_history.tex}
+\midrule
+\end{tabular}
+\end{footnotesize}
+\end{center}
+\end{table}
+
+\end{document}
+

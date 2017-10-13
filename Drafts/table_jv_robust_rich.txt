@@ -1,0 +1,5 @@
+ \\ 
+\multicolumn{7}{c}{\textit{Rich samples:}} \\ 
+        1. Urb share $\geq$ 40\% no slum min &        31 &     -15.6 &      -1.2 &      0.92 &     0.412 &     0.297 \\ 
+        2. Urb share $\geq$ 50\% no slum min &        21 &     -15.0 &       0.1 &      0.90 &     0.370 &     0.403 \\ 
+        3. Urb share $\geq$ 60\% no slum min &        12 &     -15.5 &      -2.4 &      0.88 &     0.333 &     0.105 \\ 
