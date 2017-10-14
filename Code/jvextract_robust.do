@@ -174,6 +174,7 @@ calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(20) infinit(0
 save "./work/jv_data_fit_sample.dta", replace // save this baseline set of countries
 
 calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urbmax(20) infinit(0.5) name(1950 Urbanization $\leq$ 20\%)
+save "./work/jv_data_fit_check.dta", replace // save this baseline set of countries
 calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urbmax(30) infinit(0.5) name(1950 Urbanization $\leq$ 30\%)
 calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urbmax(40) infinit(0.5) name(1950 Urbanization $\leq$ 40\%)
 calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urbmax(20) infinit(0.5) name(Max. slum share $\geq$ 20\%)

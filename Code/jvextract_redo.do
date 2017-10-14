@@ -1,201 +1,81 @@
 *****************************************************************
 * Calculate averages for different samples for use in calibration
 *****************************************************************
-// Load dataset
-clear
-use "./work/jv_data_fit_work.dta" // contains full set of data
 	
 *****************************************************************
 * Declare program to calculate appropriate averages for a given
 * sample. This will be called repeatedly below.
 *****************************************************************
 capture program drop calc_pop
-program calc_pop 
-	syntax [, name(string) oecd(int 0) slumvar(int 0) base(integer 1950) comp(integer 2005) slumlimit(real 30) poplimit(real 1000) urbmax(real 100) urbmin(real 0) infinit(real 0.5) drop5075(real 999) drop5080(real 999) exclude(string) comm(int 99) apart(int 99)]
-	
+program calc_pop
+	syntax [if] [, name(string) initinf(real 0.5)]
 	preserve
-		// Keep country if not explicitly excluded
-		foreach c of local exclude {
-			keep if country~="`c'"
-		}
-
-		// Keep only those matching OECD status
-		keep if oecd==`oecd'
+		keep `if'
+		keep if !missing(urbrate2005)
+		keep if !missing(slum2005)
+		keep if !missing(urbrate1950)
 		
-		// Keep based on changes in CDR 
-		if `drop5075'<999 {
-			keep if cdr5075<=`drop5075'
-		}
-		if `drop5080'<999 {		
-			keep if cdr5080<=`drop5080'
-		}
-		
-		// Keep if not excluded by flags
-		drop if communist==`comm'
-		drop if apart==`apart'
-
-		// Keep based on slum share being available, and slum share size
-		// First, set up the appropriate slum share
-		gen slumuse = .
-		if `slumvar'==1 { // replace slum with slum2 if slum is missing
-			replace slumuse = slum
-			replace slumuse = slum2 if slum==.
-		}
-		else if `slumvar'==2 { // use only slum2
-			replace slumuse = slum2
-		}
-		else {
-			replace slumuse = slum // use only slum - this is the default
-		}
-		
-		
-		by country_id: egen slum_max = max(slumuse)
-		keep if slum_max~=.
-		keep if slum_max>`slumlimit' // only countries with slum percent that reached at least 30% at some point
-		gen slum_mark = 1 if year==`comp' & slumuse~=. // mark countries with 2005 obs on slums
-		by country_id: egen slum_mark_tot = sum(slum_mark)
-		keep if slum_mark_tot==1 // only keep countries with a 2005 obs on slum
-		by country_id: egen pop_min = min(pop)
-		keep if pop_min>`poplimit' // only countries with minimum of 1mil population
-		by country_id: egen urbrate_min = min(urbrate)
-		keep if urbrate_min<`urbmax' // only countries that were very un-urbanized to start with
-		keep if urbrate_min>`urbmin' // only countries that were sufficiently urban
-		
-		
+		summ urbrate2005
+		local c_urb = r(mean)/100
+		summ slum2005
+		local c_inf = r(mean)/100
+		summ urbrate1950
+		local i_for = (1-`initinf')*r(mean)/100
+		local i_inf = `initinf'*r(mean)/100
+		local i_rur = 1 - r(mean)/100
 	
-	// Generate variables measuring relative size of urban population
-	quietly {
-		// Calculate the tau parameters controlling fertility rates
-		bysort year: egen crnimean = mean(crni)
-		gen t = year - `base'
-		gen tsq = t^2
-		reg crnimean t tsq
-		local tau1 = _b[t]
-		local tau2 = _b[tsq]
-		sort country_id year
-	
-		gen u = urbrate/100 // urbanization in decimal form
-		gen s_inf = u*slumuse/100 // informal share of total population in decimal form
-		gen inf_pop = s_inf*pop // total size of informal pop
-		replace inf_pop = `infinit'*u*pop if year==`base' // get baseline informal population
-		gen for_pop = u*pop - inf_pop // total size of formal pop
-		gen rur_pop = (1-u)*pop // total size of rural pop
-
-		gen inf_perc = s_inf/u
-		
-		gen rel_urb_pop =. // initialize variables
-		gen rel_inf_pop =.
-		gen rel_for_pop =.
-		gen rel_rur_pop =.
-		gen rel_pop = .
-	
-		replace rel_urb_pop = 1 if year==`base'
-		replace rel_inf_pop = 1 if year==`base'
-		replace rel_pop = 1 if year==`base'
-		replace rel_for_pop = 1 if year==`base'
-		replace rel_rur_pop = 1 if year==`base'
-			
-		forvalues i = 1(1)13 { // create relative populations using lags
-			replace rel_urb_pop = u*pop/(L`i'.u*L`i'.pop) if year==`base'+5*`i'
-			replace rel_inf_pop = inf_pop/L`i'.inf_pop if year==`base'+5*`i'
-			replace rel_pop = pop/L`i'.pop if year==`base'+5*`i'
-			replace rel_for_pop = for_pop/L`i'.for_pop if year==`base'+5*`i'
-			replace rel_rur_pop = rur_pop/L`i'.rur_pop if year==`base'+5*`i'
-		}
-			
-		summ u if year==`base'
-		local c = r(N)
-		local i_inf = r(mean)*`infinit'
-		local i_for = r(mean)*(1-`infinit')
-		local i_rur = 1- r(mean)
-		
-		qui ameans rel_for_pop if year==`base'
-		local c_for = r(mean_g)*`i_for'
-		qui ameans rel_inf_pop if year==`base'
-		local c_inf = r(mean_g)*`i_inf'
-		qui ameans rel_rur_pop if year==`base'
-		local c_rur = r(mean_g)*`i_rur'
-			
-		qui ameans rel_urb_pop if year==`comp'
-		local c_urb
-		qui ameans rel_for_pop if year==`comp'
-		local c_for = r(mean_g)*`i_for'
-		qui ameans rel_inf_pop if year==`comp'
-		local c_inf = r(mean_g)*`i_inf'
-		qui ameans rel_rur_pop if year==`comp'
-		local c_rur = r(mean_g)*`i_rur'
-		local c_tot = `c_for' + `c_inf' + `c_rur'
-
-		summ u if year==`comp'
-		local c_urb = r(mean)
-		summ inf_perc if year==`comp'
-		local c_inf = r(mean)
-		ameans rel_urb_pop if year==`comp'
+		tempvar rurbpop2005
+		gen `rurbpop2005' = pop2005*urbrate2005/(pop1950*urbrate1950)
+		ameans `rurbpop2005'
 		local r_urb = r(mean_g)
-		ameans rel_inf_pop if year==`comp'
+		tempvar rinfpop2005
+		gen `rinfpop2005' = pop2005*urbrate2005*slum2005/(pop1950*urbrate1950*`initinf'*100)
+		ameans `rinfpop2005'
 		local r_inf = r(mean_g)
-	}	
-	file write f_text "`name', `c', " %9.4f (`c_urb') "," %9.4f (`c_inf') "," %9.4f (`i_for') "," %9.4f (`i_inf') ///
-		"," %9.4f (`i_rur') "," %9.4f (`r_urb') "," %9.4f (`r_inf') "," %9.4f (`c_rur') "," %9.4f (`tau1') "," %9.4f (`tau2') _n
+		tempvar rrurpop2005
+		gen `rrurpop2005' = pop2005*(1-urbrate2005/100)/(pop1950*(1-urbrate1950/100))
+		ameans `rrurpop2005'
+		local r_rur = r(mean_g)
 
+		count
+		local c = r(N)
+		
+		tabulate country
+		
+		file write f_text "`name', `c', " %9.4f (`c_urb') "," %9.4f (`c_inf') "," %9.4f (`i_for') "," %9.4f (`i_inf') ///
+			"," %9.4f (`i_rur') "," %9.4f (`r_urb') "," %9.4f (`r_inf') "," %9.4f (`r_rur') _n
 	restore
-end // end program to calculate values	
-	
-*****************************************************************
-* Call program to write Matlab commands for basic robustness
-*****************************************************************
-capture file close f_text
-file open f_text using "./work/jvextract_robust.txt", write replace
+end
 
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(20) infinit(0.5) name(Baseline)
-save "./work/jv_data_fit_sample.dta", replace // save this baseline set of countries
-
-calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urbmax(20) infinit(0.5) name(1950 Urbanization $\leq$ 20\%)
-calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urbmax(30) infinit(0.5) name(1950 Urbanization $\leq$ 30\%)
-calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urbmax(40) infinit(0.5) name(1950 Urbanization $\leq$ 40\%)
-calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urbmax(20) infinit(0.5) name(Max. slum share $\geq$ 20\%)
-calc_pop, base(1950) comp(2005) slumlimit(10) poplimit(1000) urbmax(20) infinit(0.5) name(Max. slum share $\geq$ 10\%)
-
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(100) infinit(0.5) drop5080(-7) name($\Delta CDR_{50-80} \leq -7$)
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(100) infinit(0.5) drop5080(-12) name($\Delta CDR_{50-80} \leq -12$)
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(100) infinit(0.5) drop5080(-16) name($\Delta CDR_{50-80} \leq -16$)
-
-calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urbmax(20) infinit(0.5) name(ex-China and India) exclude(China India)
-calc_pop, base(1950) comp(2005) slumlimit(30) poplimit(1000) urbmax(20) infinit(0.5) comm(1) name(ex-Communist)
 
 *****************************************************************
-* Call program to write Matlab commands for differences in urban/slum shares
-*****************************************************************
-
-calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urbmax(20) infinit(0.5) name(Max. slum share $\geq$ 20\% urb share $\leq$ 20\%)
-calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urbmax(30) infinit(0.5) name(Max. slum share $\geq$ 20\% urb share $\leq$ 30\%)
-calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urbmax(40) infinit(0.5) name(Max. slum share $\geq$ 20\% urb share $\leq$ 40\%)
-calc_pop, base(1950) comp(2005) slumlimit(20) poplimit(1000) urbmax(50) infinit(0.5) name(Max. slum share $\geq$ 20\% urb share $\leq$ 50\%)
-
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(20) infinit(0.5) name(Max. slum share $\geq$ 0\% urb share $\leq$ 20\%)
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(30) infinit(0.5) name(Max. slum share $\geq$ 0\% urb share $\leq$ 30\%)
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(40) infinit(0.5) name(Max. slum share $\geq$ 0\% urb share $\leq$ 40\%)
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(50) infinit(0.5) name(Max. slum share $\geq$ 0\% urb share $\leq$ 50\%)
-
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(20) infinit(0.5) slumvar(0) name(Use slum var slum $\geq$ 0\% urb share $\leq$ 20\%)
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(20) infinit(0.5) slumvar(1) name(Use slum2 for miss slum $\geq$ 0\% urb share $\leq$ 20\%)
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(30) infinit(0.5) slumvar(1) name(Use slum2 for miss slum $\geq$ 0\% urb share $\leq$ 30\%)
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(40) infinit(0.5) slumvar(1) name(Use slum2 for miss slum $\geq$ 0\% urb share $\leq$ 40\%)
-calc_pop, base(1950) comp(2005) slumlimit(0) poplimit(1000) urbmax(50) infinit(0.5) slumvar(1) name(Use slum2 for miss slum $\geq$ 0\% urb share $\leq$ 50\%)
-save "./work/jv_data_fit_sample_check.dta", replace // save this baseline set of countries
-
-capture file close f_text
-
-*****************************************************************
-* Call program to write Matlab commands for rich countries
-* Separate file because they need a separate set of initial conditions
+* Open output file for summary stats used by Matlab
 *****************************************************************
 capture file close f_text
-file open f_text using "./work/jvextract_rich.txt", write replace
+file open f_text using "./work/jvextract_redo.txt", write replace
 
-calc_pop, base(1950) oecd(1) comp(2005) slumlimit(0) poplimit(1000) urbmin(40) infinit(0.2) name(Urb share $\geq$ 40\% no slum min)
-calc_pop, base(1950) oecd(1) comp(2005) slumlimit(0) poplimit(1000) urbmin(50) infinit(0.2) name(Urb share $\geq$ 50\% no slum min)
-calc_pop, base(1950) oecd(1) comp(2005) slumlimit(0) poplimit(1000) urbmin(60) infinit(0.2) name(Urb share $\geq$ 60\% no slum min)
+*****************************************************************
+* Calculate stats for baseline samples and variations
+* - These use the slum variable directly
+*****************************************************************
+clear
+use "./work/jv_data_fit_redo.dta" // contains full set of data
+
+calc_pop if urbrate1950<20, name("Baseline")
+calc_pop if slummax>30 & urbrate1950<20, name("Slum max $\geq$ 30\% Urb $\leq$ 20\%")
+calc_pop if slummax>20 & urbrate1950<20, name("Slum max $\geq$ 20\% Urb $\leq$ 20\%")
+calc_pop if slummax>10 & urbrate1950<20, name("Slum max $\geq$ 10\% Urb $\leq$ 20\%")
+calc_pop if slummax>0 & urbrate1950<30, name("Slum max $\geq$ 0\% Urb rate $\leq$ 30\%")
+calc_pop if slummax>0 & urbrate1950<40, name("Slum max $\geq$ 0\% Urb rate $\leq$ 40\%")
+calc_pop if slummax>0 & urbrate1950<50, name("Slum max $\geq$ 0\% Urb rate $\leq$ 50\%")
+calc_pop if slummax>30 & urbrate1950<30, name("Slum max $\geq$ 30\% Urb $\leq$ 30\%")
+calc_pop if slummax>30 & urbrate1950<40, name("Slum max $\geq$ 30\% Urb $\leq$ 40\%")
+calc_pop if cdr5080<=-7 & oecd==0, name("$\Delta CDR_{50-80} \leq -7$")
+calc_pop if cdr5080<=-12 & oecd==0, name("$\Delta CDR_{50-80} \leq -12$")
+calc_pop if cdr5080<=-16 & oecd==0, name("$\Delta CDR_{50-80} \leq -16$")
+calc_pop if urbrate1950<20 & country~="China" & country~="India", name("ex-China and India")
+calc_pop if urbrate1950<20 & communist==0, name("ex-Communist")
+
+
 
 capture file close f_text
-
