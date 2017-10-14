@@ -8,60 +8,43 @@ function mchistory(fitted,Setup)
     % 1800 to 1950
     fprintf(f,'1. \\emph{Observed data:} & 12.6 & 50.0 & 1.0 & 37.9 & 30.0 & 7.7 & 57.9 & 15.0 & 14.7 \\\\ \n');
 
-    % Reset to European starting conditions and demographics
-    Alt = Setup;
-    Alt.Size = [.5*.126; .5*.126; 1-.126];
-    Alt.CBR = [.03; .035; .0375];
-    Alt.CBRMin = [.0175; .0225; 0.0225];
-    Alt.PreCDR = [.035; .0425; .025];
-    Alt.PostCDR = [.0125; .020; .010];
-    Alt.UMT = [.41; 50; 0]; % longer mortality transition
+    % Reset some settings to European starting conditions and demographics
+    Setup.Size = [.5*.126; .5*.126; 1-.126];
+    Setup.CBR = [.03; .035; .0375];
+    Setup.CBRMin = [.0175; .0225; 0.0225];
+    Setup.PreCDR = [.035; .0425; .025];
+    Setup.PostCDR = [.0125; .020; .010];
+    Setup.UMT = [.41; 50; 0]; % longer mortality transition
     time = 150;
-    R = mcfix(time,fitted,Alt);
     
-    fprintf(f,'2. Calibrated model, exog. fert. & %9.1f & %9.1f & 1.0 & %9.1f & %9.1f & %9.1f & %9.1f & %9.1f & %9.1f \\\\ \n', ...
-        100*(Alt{'Formal','Size'} + Alt{'Informal','Size'})/sum(Alt{:,'Size'}), ...
-        100*(Alt{'Informal','Size'}/(Alt{'Formal','Size'} + Alt{'Informal','Size'})), ...
-        100*R{100,'UrbPerc'},100*R{100,'InfUrbPerc'},R{100,'RelUrbSize'}, ...
-        100*R{150,'UrbPerc'},100*R{150,'InfUrbPerc'},R{150,'RelUrbSize'});
+    Alt = Setup;
+    n = 2;
+    name = 'Calibrated model, exog. fert.';
+    mcrobustk(Alt,time,fitted,name,f,n);
 
+    Alt = Setup;
     Alt.Fertility = [-.3; -.3; 1]; % use endogenous fert responses
     Alt.Tau = [0; 0; 0]; % no change in CBR over time
-    R = mcfix(time,fitted,Alt);
-    
-    fprintf(f,'3. Calibrated model, endog. fert. & %9.1f & %9.1f & 1.0 & %9.1f & %9.1f & %9.1f & %9.1f & %9.1f & %9.1f \\\\ \n', ...
-        100*(Alt{'Formal','Size'} + Alt{'Informal','Size'})/sum(Alt{:,'Size'}), ...
-        100*(Alt{'Informal','Size'}/(Alt{'Formal','Size'} + Alt{'Informal','Size'})), ...
-        100*R{100,'UrbPerc'},100*R{100,'InfUrbPerc'},R{100,'RelUrbSize'}, ...
-        100*R{150,'UrbPerc'},100*R{150,'InfUrbPerc'},R{150,'RelUrbSize'});
-    
-    fprintf(f,'\\midrule \n')
-    
-    % With short UMT
-    % Reset to European starting conditions and demographics
+    n = 3;
+    name = 'Calibrated model, endog. fert.';
+    mcrobustk(Alt,time,fitted,name,f,n);
+
+    % With short UMT    
+    fprintf(f,'\\midrule \n');
+
     Alt = Setup;
-    Alt.Size = [.5*.126; .5*.126; 1-.126];
-    Alt.CBR = [.03; .035; .0375];
-    Alt.CBRMin = [.0175; .0225; 0.0225];
-    Alt.PreCDR = [.035; .0425; .025];
-    Alt.PostCDR = [.0125; .020; .010];
     Alt.UMT = [.41; 3; 0]; % short mortality transition
-    time = 150;
-    R = mcfix(time,fitted,Alt);
-    fprintf(f,'4. Calibrated model, exog. fert., fast UMT & %9.1f & %9.1f & 1.0 & %9.1f & %9.1f & %9.1f & %9.1f & %9.1f & %9.1f \\\\ \n', ...
-        100*(Alt{'Formal','Size'} + Alt{'Informal','Size'})/sum(Alt{:,'Size'}), ...
-        100*(Alt{'Informal','Size'}/(Alt{'Formal','Size'} + Alt{'Informal','Size'})), ...
-        100*R{100,'UrbPerc'},100*R{100,'InfUrbPerc'},R{100,'RelUrbSize'}, ...
-        100*R{150,'UrbPerc'},100*R{150,'InfUrbPerc'},R{150,'RelUrbSize'});
-        
+    n = 4;
+    name = 'Calibrated model, exog. fert., fast UMT';
+    mcrobustk(Alt,time,fitted,name,f,n);
+
+    Alt = Setup;
     Alt.Fertility = [-.3; -.3; 1]; % use endogenous fert responses
-    Alt.Tau = [0; 0; 0]; % no change in CBR over time    
-    R = mcfix(time,fitted,Alt);
-    fprintf(f,'5. Calibrated model, endog. fert., fast UMT & %9.1f & %9.1f & 1.0 & %9.1f & %9.1f & %9.1f & %9.1f & %9.1f & %9.1f \\\\ \n', ...
-        100*(Alt{'Formal','Size'} + Alt{'Informal','Size'})/sum(Alt{:,'Size'}), ...
-        100*(Alt{'Informal','Size'}/(Alt{'Formal','Size'} + Alt{'Informal','Size'})), ...
-        100*R{100,'UrbPerc'},100*R{100,'InfUrbPerc'},R{100,'RelUrbSize'}, ...
-        100*R{150,'UrbPerc'},100*R{150,'InfUrbPerc'},R{150,'RelUrbSize'});
+    Alt.Tau = [0; 0; 0]; % no change in CBR over time
+    Alt.UMT = [.41; 3; 0]; % short mortality transition
+    n = 5;
+    name = 'Calibrated model, endog. fert., fast UMT';
+    mcrobustk(Alt,time,fitted,name,f,n);
 
     fclose(f); 
 
