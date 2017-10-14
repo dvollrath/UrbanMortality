@@ -1,20 +1,9 @@
 *****************************************************************
-* Prepare sample data and calculate data averages for calibration
+* Calculate averages for different samples for use in calibration
 *****************************************************************
-	clear
-	
-	// Merge main data with demographics and flags for type of country
-	use "./data/jv_data_fit.dta" // contains full set of data
-	qui merge 1:1 country year using "./data/cbdcdrcrni.dta"
-	drop _merge
-	qui merge m:1 country using "./data/jv_flags.dta"
-	drop _merge
-	
-	// Set baseline slum shares for rich countries so they can be included
-	replace slum = 1 if slum==. & oecd==1 & year==2005 // 1% slum shares for oecd
-	replace slum = 95 if country=="Sierra Leone" & year==2005 // replace 100%
-	
-	save "./work/jv_data_fit_work.dta", replace
+// Load dataset
+clear
+use "./work/jv_data_fit_work.dta" // contains full set of data
 	
 *****************************************************************
 * Declare program to calculate appropriate averages for a given
@@ -24,38 +13,41 @@ capture program drop calc_pop
 program calc_pop 
 	syntax [, name(string) oecd(int 0) slumvar(int 0) base(integer 1950) comp(integer 2005) slumlimit(real 30) poplimit(real 1000) urbmax(real 100) urbmin(real 0) infinit(real 0.5) drop5075(real 999) drop5080(real 999) exclude(string) comm(int 99) apart(int 99)]
 	
-	// Load dataset
-	clear
-	use "./work/jv_data_fit_work.dta" // contains full set of data
-	
-	foreach X in 50 75 80 {
-		qui gen cdr`X' = cdr if year == 19`X'
-		qui bysort country: egen cdr19`X' = max(cdr`X')
-		qui drop cdr`X'
-	}
-	qui gen cdr5075 = cdr1975-cdr1950
-	qui gen cdr5080 = cdr1980-cdr1950
-	
-	// Create summary data to compare baseline calibration against
-	sort country year
-	qui egen country_id = group(country) // get numeric id for country
-	qui xtset country_id year, delta(5) // for using lag and difference operators
+	preserve
+		// Keep country if not explicitly excluded
+		foreach c of local exclude {
+			keep if country~="`c'"
+		}
 
-	// Limit sample of countries
-	quietly {
+		// Keep only those matching OECD status
+		keep if oecd==`oecd'
+		
+		// Keep based on changes in CDR 
+		if `drop5075'<999 {
+			keep if cdr5075<=`drop5075'
+		}
+		if `drop5080'<999 {		
+			keep if cdr5080<=`drop5080'
+		}
+		
+		// Keep if not excluded by flags
+		drop if communist==`comm'
+		drop if apart==`apart'
+
+		// Keep based on slum share being available, and slum share size
+		// First, set up the appropriate slum share
 		gen slumuse = .
-		if `slumvar'==1 {
+		if `slumvar'==1 { // replace slum with slum2 if slum is missing
 			replace slumuse = slum
 			replace slumuse = slum2 if slum==.
 		}
-		else if `slumvar'==2 {
+		else if `slumvar'==2 { // use only slum2
 			replace slumuse = slum2
 		}
 		else {
-			replace slumuse = slum
+			replace slumuse = slum // use only slum - this is the default
 		}
 		
-		keep if oecd==`oecd'
 		
 		by country_id: egen slum_max = max(slumuse)
 		keep if slum_max~=.
@@ -70,23 +62,6 @@ program calc_pop
 		keep if urbrate_min>`urbmin' // only countries that were sufficiently urban
 		
 		
-		if `drop5075'<999 {
-			keep if cdr5075<=`drop5075'
-		}
-		if `drop5080'<999 {		
-			keep if cdr5080<=`drop5080'
-		}
-		
-		drop if communist==`comm'
-		drop if apart==`apart'
-		
-		foreach c of local exclude {
-			drop if country=="`c'"
-		}
-		
-		//drop if country=="Bosnia and Herzegovina" // eliminate Euro-area countries
-		//drop if country=="Republic of Moldova"
-	}
 	
 	// Generate variables measuring relative size of urban population
 	quietly {
@@ -162,6 +137,8 @@ program calc_pop
 	}	
 	file write f_text "`name', `c', " %9.4f (`c_urb') "," %9.4f (`c_inf') "," %9.4f (`i_for') "," %9.4f (`i_inf') ///
 		"," %9.4f (`i_rur') "," %9.4f (`r_urb') "," %9.4f (`r_inf') "," %9.4f (`c_rur') "," %9.4f (`tau1') "," %9.4f (`tau2') _n
+
+	restore
 end // end program to calculate values	
 	
 *****************************************************************

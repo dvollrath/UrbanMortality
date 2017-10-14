@@ -36,18 +36,18 @@ function mctable2(fitted,Setup,name)
         Setup{'Formal','Growth'});
     fprintf(f,'Preference parameters ($\\beta$) & %9.2f & From Becker et al (2005) \\tabularnewline[+0.03215in] \n', ...
         Setup{1,'UMT'});
+    fprintf(f,'Fertility parameter ($\\phi_1$) & %9.3f & From observed CRNI \\tabularnewline[+0.03215in] \n', ...
+        Setup{1,'Tau'}*1000);
+    fprintf(f,'Fertility parameter ($\\phi_2$) & %9.3f & From observed CRNI \\tabularnewline[+0.03215in] \n', ...
+        Setup{2,'Tau'}*1000);
 
     fclose(f);
 
     filename = sprintf('../Drafts/table_jv_%s_2b.txt',name);
     f = fopen(filename,'w');
     
-    %fprintf(f,'Formal prod./amenity growth ($\\hat{\\alpha}_f$) & %9.3f & Relative urban size in 2005 (15.2) \\tabularnewline[+0.03215in] \n', fitted(3));
-    %fprintf(f,'Preference weight on CDR ($\\beta_D$) & %9.2f & Relative urban population 2005 (17.25) \\tabularnewline[+0.03215in] \n', fitted(4));
     fprintf(f,'Formal congestion elasticity ($\\epsilon_f$) & %9.2f & Urbanization rate in 2005 (mean 31.0\\%%) \\tabularnewline[+0.03215in] \n', fitted(1));
     fprintf(f,'Informal congestion elasticity ($\\epsilon_l$) & %9.2f & Informal share in 2005 (mean 64.2\\%%) \\tabularnewline[+0.03215in] \n', fitted(2));
-    %fprintf(f,'CBR cost parameter ($\\phi_1$) & %9.2f & CRNI in 1985 (mean 28.8) \\tabularnewline[+0.03215in] \n', 1000*fitted(3));
-    %fprintf(f,'CBR cost parameter ($\\phi_2$) & %9.2f & CRNI in 2005 (mean 25.2) \\tabularnewline[+0.03215in] \n', 1000*fitted(4));
     
     fclose(f);
 

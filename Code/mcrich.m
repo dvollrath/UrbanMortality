@@ -4,7 +4,7 @@
 function mcrich(Setup,time,name)
     % Open and read calibration targets and initial values from file
     f = fopen('../Work/jvextract_rich.txt','r');
-    I = textscan(f,'%s%f%f%f%f%f%f','Delimiter',',');
+    I = textscan(f,'%s%f%f%f%f%f%f%f%f%f%f%f','Delimiter',',');
     Cal = table;
     Cal.Name = I{1,1};
     Cal.Count = I{1,2};

@@ -81,6 +81,18 @@ function mcindividual(Setup,time,name)
     name = 'Highest 30 informal';
     mcrobustj(Setup,time,fitted,name,f,count,n)
      
+    Esort = sortrows(Eps,1); % get minimum formal elasticity
+    fitted = Esort(1,:);
+    count = height(Cal);
+    name = 'Lowest formal elasticity';
+    mcrobustj(Setup,time,fitted,name,f,count,n)
+
+    Esort = sortrows(Eps,-2); % get maximum informal elasticity
+    fitted = Esort(1,:);
+    count = height(Cal);
+    name = 'Highest informal elasticity';
+    mcrobustj(Setup,time,fitted,name,f,count,n)
+    
     fclose(f);  
 
 end

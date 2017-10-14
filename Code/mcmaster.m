@@ -14,7 +14,7 @@ time = 55; % number of periods to simulate
 
 % Open and read calibration targets and initial values from file
 f = fopen('../Work/jvextract_robust.txt','r');
-I = textscan(f,'%s%f%f%f%f%f%f%f%f%f','Delimiter',',');
+I = textscan(f,'%s%f%f%f%f%f%f%f%f%f%f%f','Delimiter',',');
 Cal = table;
 Cal.Name = I{1,1};
 Cal.Count = I{1,2};
@@ -26,6 +26,8 @@ Cal.InitRural = I{1,7};
 Cal.RelUrban = I{1,8};
 Cal.RelInformal = I{1,9};
 Cal.RelRural = I{1,10};
+Cal.FertTau1 = I{1,11};
+Cal.FertTau2 = I{1,12};
 fclose(f);
 
 % Targets - set up cell array with metric/value/period
@@ -51,8 +53,9 @@ Setup.Lambda = [0; 0; 0]; % parameters for wedges in welfare growth btwn locatio
 % them to the main program easier. 
 Setup.UMT = [.41; 3; 0]; % parameters controlling speed of UMT
 Setup.Fertility = [0; 0; 0]; % control endogenous fertility response
-Setup.Tau = [.000286; -.0000041; 0]; % parameters for exog path of CBR 
+%Setup.Tau = [.000286; -.0000041; 0]; % parameters for exog path of CBR 
 
+Setup.Tau = [Cal{1,'FertTau1'}/1000; Cal{1,'FertTau2'}/1000; 0];
 Setup.Properties.RowNames = {'Formal','Informal','Rural'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -75,7 +78,7 @@ name = 'sim';
 mctable2(fitted,Setup,name); % calibration parameters
 mctable3(fitted,Setup,time,Targets,name); % comparison of scenarios
 mctable5(fitted,Setup,Targets,name); % policy counterfactuals
-%mcrobust(Cal,time,Setup,name); % perform robustness checks
+mcrobust(Cal,time,Setup,name); % perform robustness checks
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Run for modern rich countries
@@ -90,4 +93,4 @@ mctable5(fitted,Setup,Targets,name); % policy counterfactuals
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Run for historical rich countries
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%mchistory(fitted,Setup);
+mchistory(fitted,Setup);

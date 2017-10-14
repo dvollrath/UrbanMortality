@@ -8,17 +8,12 @@
 	
 	use "./work/jv_data_fit_sample.dta" // contains all the countries
 	
-	// These two countries do not get converging results in the calibration
-	drop if country=="Sierra Leone"
-	drop if country=="Slovenia"
-
 	replace country = subinstr(country,"'","",.)
 	
 	local i = 1
 	
 	levelsof country // get all id numbers
 	foreach j in `r(levels)' { // loop through all values
-		
 		// Urbanization rates
 		qui summ urbrate if year==1950 & country=="`j'"
 		local base_urbrate = r(mean)/100
@@ -32,8 +27,6 @@
 						"," %9.4f (1-`base_urbrate') _n
 			local i = `i' + 1
 		}
-		
-		
 	} // end foreach loop
 	
 	file close f_result
