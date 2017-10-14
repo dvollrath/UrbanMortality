@@ -31,4 +31,4 @@
 	
 	// Drop if small population - this condition has not changed - so make permanent
 	keep if pop1950>1000
-	save "./work/jv_data_fit_redo.dta", replace
+	save "./work/jv_data_fit_robust.dta", replace

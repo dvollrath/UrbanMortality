@@ -64,14 +64,14 @@ end
 * Open output file for summary stats used by Matlab
 *****************************************************************
 capture file close f_text
-file open f_text using "./work/jvextract_redo.txt", write replace
+file open f_text using "./work/jvextract_robust.txt", write replace
 
 *****************************************************************
 * Calculate stats for baseline samples and variations
 * - These use the slum variable directly
 *****************************************************************
 clear
-use "./work/jv_data_fit_redo.dta" // contains full set of data
+use "./work/jv_data_fit_robust.dta" // contains full set of data
 
 calc_pop if urbrate1950<20, name("Baseline") ind(1) // Baseline sample saves
 calc_pop if slummax>30 & urbrate1950<20, name("Slum max $\geq$ 30\% Urb $\leq$ 20\%")
@@ -87,13 +87,16 @@ calc_pop if cdr1980-cdr1950<=-12 & oecd==0, name("$\Delta CDR_{50-80} \leq -12$"
 calc_pop if cdr1980-cdr1950<=-16 & oecd==0, name("$\Delta CDR_{50-80} \leq -16$")
 calc_pop if urbrate1950<20 & country~="China" & country~="India", name("ex-China and India")
 calc_pop if urbrate1950<20 & communist==0, name("ex-Communist")
+calc_pop if urbrate1950>40 & oecd==1, name("Urb $\geq$ 40\%")
+calc_pop if urbrate1950>50 & oecd==1, name("Urb $\geq$ 50\%")
+calc_pop if urbrate1950>60 & oecd==1, name("Urb $\geq$ 60\%")
 
 *****************************************************************
 * Calculate stats using expanded slum information
 * - Use slum2 in place of missing slum data
 *****************************************************************
 clear
-use "./work/jv_data_fit_redo.dta" // contains full set of data
+use "./work/jv_data_fit_robust.dta" // contains full set of data
 
 replace slum2005 = slum22005 if slum2005==. // replace with slum2 for missing slum obs
 calc_pop if urbrate1950<20, name("Using slum2 for miss Urb $\leq$ 20\%")
@@ -105,7 +108,7 @@ calc_pop if urbrate1950<40, name("Using slum2 for miss Urb $\leq$ 40\%")
 * - Use slum2 ONLY
 *****************************************************************
 clear
-use "./work/jv_data_fit_redo.dta" // contains full set of data
+use "./work/jv_data_fit_robust.dta" // contains full set of data
 
 replace slum2005 = slum22005 // replace with slum2 for everyone
 calc_pop if urbrate1950<20, name("Using slum2 for all Urb $\leq$ 20\%")
