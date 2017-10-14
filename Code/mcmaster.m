@@ -78,12 +78,12 @@ name = 'sim';
 mctable2(fitted,Setup,name); % calibration parameters
 mctable3(fitted,Setup,time,Targets,name); % comparison of scenarios
 mctable5(fitted,Setup,Targets,name); % policy counterfactuals
-mcrobust(Cal,time,Setup,name); % perform robustness checks
+%mcrobust(Cal,time,Setup,name); % perform robustness checks
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Peform individual calibrations by country
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-mcindividual(Setup,time,'ind');
+%mcindividual(Setup,time,'ind');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Run for historical rich countries
