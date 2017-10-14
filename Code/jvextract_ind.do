@@ -15,11 +15,11 @@
 	levelsof country // get all id numbers
 	foreach j in `r(levels)' { // loop through all values
 		// Urbanization rates
-		qui summ urbrate if year==1950 & country=="`j'"
+		qui summ urbrate1950 if country=="`j'"
 		local base_urbrate = r(mean)/100
-		qui summ urbrate if year==2005 & country=="`j'"
+		qui summ urbrate2005 if country=="`j'"
 		local comp_urbrate = r(mean)/100
-		qui summ slum if year==2005 & country=="`j'"
+		qui summ slum2005 if country=="`j'"
 		local comp_slum = r(mean)/100
 		
 		if `comp_urbrate'~=. & `comp_slum'~=. {
