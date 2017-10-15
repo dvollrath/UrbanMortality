@@ -16,9 +16,9 @@ function mcindividual(Setup,time,name)
     Cal.InitRural = I{1,7};
     fclose(f);
     
-    filename = sprintf('../Drafts/table_jv_robust_%s.txt',name);
+    filename = sprintf('../Drafts/table_jv_%s_ind.txt',name);
     f = fopen(filename,'w');
-    csvname = sprintf('../Drafts/table_jv_robust_%s.csv',name);
+    csvname = sprintf('../Drafts/table_jv_%s_ind.csv',name);
     g = fopen(csvname,'w');
     fprintf(f,'\\multicolumn{7}{c}{\\textit{Individual countries:}} \\\\ \n');
     

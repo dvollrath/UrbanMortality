@@ -18,7 +18,7 @@ function mctable3(fitted,Setup,time,Targets,name)
     
     % Call model to replicate UMT with fitted parameters
     R = mcfix(time,fitted,Setup);
-    aggeps = R{time,'AggEps'}
+    aggeps = R{time,'AggEps'};
     basev = R{time,'Welfare'};
     fprintf(f,'\\noalign{\\smallskip} %9.0f. With UMT & %9.1f & %9.1f & 1.0 & %9.1f & %9.1f & %9.1f & 1.0 & %9.1f & 1.00 \\tabularnewline[+0.015in] \n', ...
         i, ...

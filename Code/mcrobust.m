@@ -2,7 +2,7 @@
 % Calibrate model to various robustness scenarios - for inclusion
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function mcrobust(Cal,time,Setup,name)
-    filename = sprintf('../Drafts/table_jv_robust_%s.txt',name);
+    filename = sprintf('../Drafts/table_jv_%s_robust.txt',name);
     f = fopen(filename,'w');
 
     % Sample changes

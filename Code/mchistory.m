@@ -1,9 +1,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Try to match European historical situation with slow UMT
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function mchistory(fitted,Setup)
+function mchistory(fitted,Setup,name)
 
-    f = fopen('../Drafts/table_jv_history_1800.tex','w');
+    filename = sprintf('../Drafts/table_jv_%s_history.txt',name);
+    f = fopen(filename,'w');
 
     % 1800 to 1950
     fprintf(f,'1. \\emph{Observed data:} & 12.6 & 50.0 & 1.0 & 37.9 & 30.0 & 7.7 & 57.9 & 15.0 & 14.7 \\\\ \n');
