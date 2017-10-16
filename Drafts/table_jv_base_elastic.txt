@@ -1,0 +1,8 @@
+        1. Baseline &     1.200 &     1.291 &     0.639 &      -9.4 &      -8.5 &      1.09 &      0.26 \\ 
+\multicolumn{7}{l}{Elasticites set exogenously:} \\ 
+        2. Elasticities set by factor shares &     0.560 &     0.600 &     0.300 &     -18.5 &     -10.3 &      0.97 &     22.95 \\ 
+        3. Elasticities set by factor shares, plus formal agglom &     0.560 &     0.700 &     0.300 &     -18.2 &     -14.8 &      0.97 &     15.89 \\ 
+        4. Elas. set by factor shares, plus urban agglom, plus housing &     0.599 &     0.791 &     0.339 &     -15.9 &     -14.3 &      0.99 &      9.65 \\ 
+\multicolumn{7}{l}{Rural elasticity set, other calibrated:} \\ 
+        5. Matching exogenous rural elasticity &     0.599 &     0.979 &     0.378 &     -12.8 &     -14.5 &      1.01 \\ 
+        0. 

@@ -13,17 +13,17 @@ where $c_j$ is consumption of non-housing goods and services, and $h_j$ is consu
 
 The amenity value $Q_j$ and the crude death rate $CDR_j$ are taken as given by an individual in location $j$. They choose, however, the amounts of $c_j$ and $h_j$ to purchase.  The budget constraint facing an individual in location $j$ is
 \begin{equation}
-    w_j = c_j + r_j h_j
+    w_j = c_j + p_j h_j
 \end{equation}
-where $r_j$ is the rental price of housing (relative to consumption goods), and $w_j$ is the wage. Optimizing over consumption and housing, we get that $c_j = \omega_c w_j$ and $h_j = \omega_h w_j/r_j$. This results in utility of
+where $p_j$ is the price of housing (relative to consumption goods), and $w_j$ is the wage. Optimizing over consumption and housing, we get that $c_j = \omega_c w_j$ and $h_j = \omega_h w_j/p_j$. This results in utility of
 \begin{equation}
-    V_j = \ln w_j - \omega_h \ln r_j + \omega_q \ln Q_j + \omega_d \ln (1/CDR_j) + \Omega,
+    V_j = \ln w_j - \omega_h \ln p_j + \omega_q \ln Q_j + \omega_d \ln (1/CDR_j) + \Omega,
 \end{equation}
 where $\Omega = \omega_c \ln \omega_c + \omega_h \ln \omega_h$. 
 
 For our purposes, we care about the growth rate of utility in each location, which is given by
 \begin{equation}
-    \hat{V}_j = \hat{w}_j - \omega_h \hat{r}_j + \omega_q \hat{Q}_j - \omega_d \hat{CDR}_j.
+    \hat{V}_j = \hat{w}_j - \omega_h \hat{p}_j + \omega_q \hat{Q}_j - \omega_d \hat{CDR}_j.
 \end{equation}
 We can evaluate each of these separate terms to find the effect of population growth on utility growth.
 
@@ -53,11 +53,11 @@ In terms of our baseline model, we can write the above as
 \end{equation}
 where $\epsilon^w_j = \gamma_j - \alpha_j - \beta_j$ is the elasticity of the wage with respect to population size.
 
-\textbf{Housing:} The second term in utility growth involves the rental price of housing. Given some limitations on housing due to land constraints and/or regulations, then it should be the case that rents are rising with $N_j$. We could write this in a reduced form as
+\textbf{Housing:} The second term in utility growth involves the price of housing. Given some limitations on housing due to land constraints and/or regulations, then it should be the case that prices are rising with $N_j$. We could write this in a reduced form as
 \begin{equation}
-    \hat{r}_j = \hat{a}^r_j \epsilon_j^h \hat{N}_j
+    \hat{p}_j = \hat{a}^h_j \epsilon_j^h \hat{N}_j
 \end{equation}
-where $\epsilon^h_j$ is the elasticity of rents (housing price) with respect to population size. The value $\hat{a}^r_j$ is exogenous growth in rental rates in location $j$ for any reason unrelated to population size. 
+where $\epsilon^h_j$ is the elasticity of the housing price with respect to population size. The value $\hat{a}^h_j$ is exogenous growth in the housing price in location $j$ for any reason unrelated to population size. 
 
 \textbf{Amenities:} The third term in utility growth involves amenties. Assuming some effect of population size on the quantity (or implicit value) of amenities available, then we could write, again in reduced form,
 \begin{equation}
@@ -73,19 +73,17 @@ Here, $\hat{a}^q_j$ is exogenous growth in the value of amenities, and $\epsilon
 \end{equation}
 where 
 \begin{equation}
-    G_j = \hat{a}^w_j - \omega_h \hat{a}^r_j + \omega_q \hat{a}^q_j
+    G_j = \hat{a}^w_j - \omega_h \hat{a}^h_j + \omega_q \hat{a}^q_j
 \end{equation}
-is the exogenous growth in wages, rents, and amenities, where each are weighted as in the utility function. Similarly, the combined elasticity term, $\epsilon_j$ is
+is the exogenous growth in wages, housing prices, and amenities, where each are weighted as in the utility function. Similarly, the combined elasticity term, $\epsilon_j$ is
 \begin{eqnarray}
     \epsilon_j &=& \epsilon^w_j - \omega_h \epsilon^h_j + \omega_q \epsilon^q_j \\
                &=& \gamma_j - \alpha_j - \beta_j - \omega_h \epsilon^h_j + \omega_q \epsilon^q_j \label{EQN_epsilon}
 \end{eqnarray}
-where the second line shows the explicit role of agglomeration effects ($\gamma_j$) and the production function parameters ($\alpha_j$ and $\beta_j$) on the elasticity. WHile the value of $\gamma_j$ is expected to be positive, note that the rest of these terms would act to make $\epsilon_j$ negative. The values of $\alpha_j$ and $\beta_j$ indicate how quickly wages decline with the number of workers. The relationship of rents to population size is presumably positive, so the term $\omega_h \epsilon^h_j$ is positive, and this is subtracted
+where the second line shows the explicit role of agglomeration effects ($\gamma_j$) and the production function parameters ($\alpha_j$ and $\beta_j$) on the elasticity. WHile the value of $\gamma_j$ is expected to be positive, note that the rest of these terms would act to make $\epsilon_j$ negative. The values of $\alpha_j$ and $\beta_j$ indicate how quickly wages decline with the number of workers. The relationship of housing prices to population size is presumably positive, so the term $\omega_h \epsilon^h_j$ is positive, and so acts to make the overall elasticity negative as well.
 
 \subsection{Parameter values}
 The expression in (\ref{EQN_epsilon}) shows us what explicit types of information we need to quantify the aggregate elasticity of welfare with respect to population size. For each in turn, we can evaluate them based on outside literature. Ideally, we would be able to provide a separate estimate of the parameter by location, although as we will describe below, this will not always be feasible.
-
-\textbf{Agglomeration effects:} The value of $\gamma_j$ has been estimated XXXXX, and appears to have a maximum value of $\gamma$
 
 \textbf{Factor shares:} The values of $\alpha_j$ and $\beta_j$ (which capture the importance of capital and land in production in location $j$, respectively), can be estimated from factor share information. Individually, $\alpha_j$ and $\beta_j$ would be equal to the factor share of capital and land, assuming factor markets are competitive. Alternatively, their sum, $\alpha_j + \beta_j$, could be recovered if we know the \textit{labor} share in a location. 
 
@@ -93,41 +91,26 @@ The major issue here is that factor shares are not reported by location, but typ
 
 In the rural location, the agriculture is obviously going to be the dominant sector, with smaller weights on manufacturing and services activities. For the formal sector, we believe that the factor shares will be driven by sectors involving heavy manufacturing (i.e. chemicals or equipment), wholesale trade, information, and services like finance. For the informal sector, the factor shares will depend mainly on sectors like light manufacturing (i.e. textiles), retail and/or commerce, and personal services. 
 
-Valentinyi and Herrendorf (2008) provide estimates of the combined land and capital shares, $\alpha_j + \beta_j$, for several broad sub-sectors of the U.S. economy. In agriculture, this share is 0.54, manufacturing consumption has a share of 0.40, equipment investment a share of 0.34, construction a share of 0.21, and services a share of 0.34. 
+Valentinyi and Herrendorf (2008) provide estimates of the combined land and capital shares, $\alpha_j + \beta_j$, for several broad sub-sectors of the U.S. economy. In agriculture, this share is 0.54, suggesting that $\alpha_r + \beta_r = 0.54$ may be a decent estimate. Restuccia and Santaeulalia-Llopis (2017) find a similar share of 0.58 for Malawi, and Chen, Restuccia, and Santaeulalia-LLopis (2017) give a share of 0.58 in Ethiopia. For agriculture, we thus use a value of 0.56. 
 
-Young (2010) looks at labor shares at a more disaggregate level for the United States, and over a longer period of time, but does not make the same adjustments for proprietors income that Valentinyia nd Herrendorf do. With that caveat in mind, his evidence indicates that sectors we consider to be more heavily represented in informal locations have lower values of $\alpha_j + \beta_j$. Specifically, for general services the labor share is 0.689, indicating that the $\alpha + \beta$ here is about .311. In contrast, for finance the labor share is 0.444, for $\alpha+\beta$
+For the formal location, Valentinyi and Herrendorf's data is less useful, because it remains (for us) at a very high level of aggregation, with services all lumped together and the aggregate of manufacturing consumption (with a capital/land share of 0.40) also being somewhat broad. Young (2010) looks at labor shares at a more disaggregate level for the United States, and over a longer period of time, but does not make the same adjustments for proprietors income that Valentinyia nd Herrendorf do. With that caveat in mind, Young's numbers show high labor shares, and hence low values of $\alpha_f + \beta_f$ for several sectors we consider associated with formal locations. Utilities, both gas and electric, have implied values of $\alpha_f + \beta_f = 0.657$. Finance has an implied value of $\alpha_f + \beta_f = 0.556$, and communications gives an implied value of 0.503. Heavy industries such as chemicals and oil products have labor shares that gives values around $\alpha_f + \beta_f = 0.50$. Zuleta et al (2009) use data from Colombia, giving us something more appropriate in a developing context. Their capital shares suggest values of $\alpha_f + \beta_f = 0.743$ for public services, $\alpha_f + \beta_f = 0.487$ for manufacturing, and $\alpha_f + \beta_f = 0.625$ for finance. Using KLEMS data from India, which has reported labor shares by sub-sector, we find that heavy manufacturing industries, as well as business services, have implied values of $\alpha_f + \beta_f$ greater than 0.6. Based on all this information, we set the value of $\alpha_f + \beta_f = 0.6$.
 
-\textbf{Rents:} For the effect of renta
+In constrast, for sectors we associate with informal locations, Zuleta et al find $\alpha_l + \beta_l = 0.180$ for commerce and food service, $\alpha_l + \beta_l = 0.230$ for social and personal services, and $\alpha_l + \beta_ = 0.274$ for transport and storage. This is in line with the numbers from Young (2010), who find $\alpha_l + \beta_l = 0.227$ for trade in the U.S., and $\alpha_l + \beta_l = 0.311$ for services in general. Certain manufacturing sub-sectors, such as apparel, also have estimates of high labor shares, suggesting $\alpha_l + \beta_l = 0.152$. Valentinyi and Herrendorf's broad service sector has a capital share of 0.34, above these individual estimates. The KLEMS data from India reports the smallest implied values of $\alpha_l+\beta_l$ to be around 0.150-0.400 for personal services, health and social work, and food service. To be conservative, we set the $\alpha_l + \beta_l = 0.3$.
 
-\textbf{Amenities:} For amenities, we need to establish both the utility weight $\omega_q$, as well as their elasticity with respect to population. 
+\textbf{Agglomeration effects:} The value of $\gamma_j$ has been estimated XXXXX, and appears to have a maximum value of $\gamma = 0.10$. As the aggomeration effects are typically estimated using developed countries, we feel that this estimate is applicable to formal urban locations, so $\gamma_f = 0.10$. Whether there are similar agglomeration effects at work in informal or rural locations is arguable. 
 
+Assuming that agglomeration effects only operate in formal locations works \textit{against} our findings, as it narrows the gap between the formal elasticity, $\epsilon_f$ and the informal elasticity, $\epsilon_l$. With a smaller gap, the effect of the UMT would have been smaller in pushing people towards informal locations. 
 
-\section{Historical outcomes}
+\textbf{Housing prices:} For the effect of prices, we need both the expenditure share, $\omega_h$ and the elasticity, $\epsilon^h_j$. For the expenditure share, the average for housing expenditures for our baseline sample, from XXXXX in 19XX, is about 10\%. This low value is due to their relative poverty. For the same set of countries, the expenditure share on food is over 50\%. However, even if we were to assume a larger expenditure share on housing, similar to shares in developed countries, this will not result in an appreciable different in the results we find.
 
-As an additional validation check on our calibrated model, we evaluate its ability to explain historical urbanization in Europe. 
+The elasticity, $\epsilon^h_j$, is the percent change in prices given the percent change in the number of population, $N_j$. Assuming that population and the number of housing units are proportional within a given location (which does not require that the household size is similar across locations), we can use estimates of the elasticity of prices with respect to the number of households. Saiz (2010) finds that this elasticity varies with the strictness of the land use regulations, as measured by the Wharton Regulation Index (WRI) from Gyuorko, Saiz, and Summers (2008). Saiz's results imply that the difference in the elasticity $\epsilon^h_j$ between the least (10th percentile) and most regulated markets (90th percentile) is 0.228. If we instead use the maximum and minimum observed values of the WRI, this indicates s difference in $\epsilon^h_j$ between cities of 0.521. 
 
+Given that informal locations within developing countries likely have fewer regulations than even the lightest-regulated U.S. city, we use the difference of 0.521 to distinguish formal from informal locations. Using Saiz's central estimate of the elasticity of 0.650, this implies that the formal elasticity is $\epsilon^h_f = 0.911$ and the informal elasticity is $\epsilon^h_l = 0.390$. Combined with the expenditure share, this implies that $\omega_f \epsilon^h_f = 0.091$ and $\omega_l \epsilon^h_l = 0.039$. For rural areas, we presume that they too have very few land use regulations, and so set the term $\omega_r \epsilon^h_r = 0.039$ as well. 
 
-\begin{table}[htb]
-\begin{center}
-\begin{footnotesize}
-\caption{\textbf{HISTORICAL OUTCOMES USING THE CALIBRATED MODEL, 1800-1950}} \label{tab_longrun}
-\begin{tabular}{lccccccccc}
-\midrule
-         & \multicolumn{3}{c}{1800:} & \multicolumn{3}{c}{1900:} & \multicolumn{3}{c}{1950:} \\ \cmidrule(lr){2-4} \cmidrule(lr){5-7} \cmidrule(lr){8-10}
-         & Urb. & Inf. & Urb. & Urb. & Inf. & Urb. & Urb. & Inf. & Urb. \\
-Scenario & Rate & Rate & Size & Rate & Rate & Size & Rate & Rate & Size  \\ \midrule
-\input{table_jv_history_1800.tex}
-\midrule
-         & \multicolumn{3}{c}{1750:} & \multicolumn{3}{c}{1900:} & \multicolumn{3}{c}{1950:} \\ \cmidrule(lr){2-4} \cmidrule(lr){5-7} \cmidrule(lr){8-10}
-         & Urb. & Inf. & Urb. & Urb. & Inf. & Urb. & Urb. & Inf. & Urb. \\
-Scenario & Rate & Rate & Size & Rate & Rate & Size & Rate & Rate & Size  \\ \midrule
-\input{table_jv_history_1750.tex}
-\midrule
+\textbf{Amenities:} For amenities, we need to establish both the utility weight $\omega_q$, as well as their elasticity with respect to population, $\epsilon^q_j$. Estimates indicate that the elasticity is close to zero, after controlling for natural amenities such as weather and coastal locations that are insensitive to population, as in Albouy (2008). Duranton (2016) finds no effect of amenities on wages within cities, indicating that there is no trade-off at work, consistent with a utility weight of $\omega_q = 0$. Chauvin et al (2016) find no relationship of weather and wages in China and India, perhaps indicating that at low levels of development amenities (of whatever form) are not valued very highly in welfare, again indicating a value of $\omega_q = 0$. Albouy (2012) finds that the quality of life does not significantly differ by city size, suggesting $\epsilon^q_j$ is close to zero as well. 
 
-\end{tabular}
-\end{footnotesize}
-\end{center}
-\end{table}
+If we did allow for a non-zero weight on amenities, $\omega_q >0$, then Diamond's (2016) results on the difference in the response to amenities by schooling suggests that formal locations likely have a larger elasticity than informal locations, $\epsilon^q_f > \epsilon^q_l$. This is consistent with our calibrated finding of a larger formal elasticity, but the other evidence suggests that these elasticities are both quite small, even if non-zero.
+
 
 \end{document}
 
