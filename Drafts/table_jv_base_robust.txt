@@ -40,10 +40,3 @@
        36. All growth lower -1\% &        43 &      -9.4 &      -8.5 &      1.09 &     1.293 &     0.640 \\ 
        37. Mortality pref. $\beta = 1.56$ &        43 &     -18.6 &     -13.3 &      0.91 &     1.690 &     0.966 \\ 
        38. Mortality pref. $\beta = 1.70$ &        43 &     -19.2 &     -13.6 &      0.90 &     1.738 &     1.005 \\ 
-       39. Rural elasticity $\epsilon_r = 1.0$ &        43 &     -10.2 &      -9.8 &      1.06 &     1.189 &     0.553 \\ 
-       40. Rural elasticity $\epsilon_r = 1.6$ &        43 &      -8.2 &      -6.8 &      1.15 &     1.500 &     0.813 \\ 
-       41. Rural elasticity $\epsilon_r = .6$ &        43 &     -12.8 &     -14.5 &      1.01 &     0.981 &     0.379 \\ 
-       42. Rural elas $\epsilon_r = .6$ and endog fert. &        43 &     -13.4 &     -22.4 &      1.11 &     1.060 &     0.342 \\ 
-       43. Rural elasticity $\epsilon_r = .4$ &        43 &     -14.9 &     -19.5 &      0.99 &     0.876 &     0.291 \\ 
-       44. Rural elas $\epsilon_r = .4$ and endog fert. &        43 &     -14.6 &     -27.0 &      1.06 &     0.991 &     0.270 \\ 
-       45. Formal growth $G_f = 0.04$ and rural elas = .6 &        43 &     -13.5 &     -11.7 &      1.00 &     0.771 &     0.379 \\ 

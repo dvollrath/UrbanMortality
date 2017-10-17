@@ -10,7 +10,7 @@ function mcelastic(fitted,Setup,name,T,time,Emean,Emedian)
     Agglomeration = [-0.036; -0.075; 0]; % Estimated agglomeration effects
     %Housing = [0.1*0.91*5; 0.1*.39*5;  0.1*0.39*5]; % Estimated housing elasticities
     Housing = [0.1*4; 0.1*2;  0.1*2]; % Estimated housing elasticities
-    Amenities = [0; 0; 0.1*.25];
+    Amenities = [0; 1*.25; 0];
     
     % Baseline model
     n = 1;
@@ -54,13 +54,21 @@ function mcelastic(fitted,Setup,name,T,time,Emean,Emedian)
     fprintf(f,'\\multicolumn{7}{l}{Alternatives for all elasticities:} \\\\ \n');
     
     n = n+1;
-    name = 'All elasticities inferred from literature:';
+    name = 'All elasticities inferred from literature, no amenities:';
+    Alt = Setup;
+    Alt.Epsilon = Shares + Agglomeration + Housing;
+    fitted(1) = Alt.Epsilon(1);
+    fitted(2) = Alt.Epsilon(2);
+    mcrobusth(Alt,time,fitted,name,f,n);
+
+    n = n+1;
+    name = 'Make informal elasticity as high as plausible:';
     Alt = Setup;
     Alt.Epsilon = Shares + Agglomeration + Housing + Amenities;
     fitted(1) = Alt.Epsilon(1);
     fitted(2) = Alt.Epsilon(2);
     mcrobusth(Alt,time,fitted,name,f,n);
-
+    
     fprintf(f,'\\multicolumn{7}{l}{Other results:} \\\\ \n');
 
     n= n + 1;
@@ -75,7 +83,6 @@ function mcelastic(fitted,Setup,name,T,time,Emean,Emedian)
     Alt.Epsilon = [0.5; 0.5; Shares(3) + Housing(3)];
     mcrobustg(Alt,time,T,name,f,n);
 
-    
     n = n+1;
     name = 'All elasticities set from share:';
     Alt = Setup;
