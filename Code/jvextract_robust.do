@@ -87,9 +87,6 @@ calc_pop if cdr1980-cdr1950<=-12 & oecd==0, name("$\Delta CDR_{50-80} \leq -12$"
 calc_pop if cdr1980-cdr1950<=-16 & oecd==0, name("$\Delta CDR_{50-80} \leq -16$")
 calc_pop if urbrate1950<20 & country~="China" & country~="India", name("ex-China and India")
 calc_pop if urbrate1950<20 & communist==0, name("ex-Communist")
-calc_pop if urbrate1950>40 & oecd==1, name("Urb $\geq$ 40\%")
-calc_pop if urbrate1950>50 & oecd==1, name("Urb $\geq$ 50\%")
-calc_pop if urbrate1950>60 & oecd==1, name("Urb $\geq$ 60\%")
 
 *****************************************************************
 * Calculate stats using expanded slum information
@@ -114,6 +111,19 @@ replace slum2005 = slum22005 // replace with slum2 for everyone
 calc_pop if urbrate1950<20, name("Using slum2 for all Urb $\leq$ 20\%")
 calc_pop if urbrate1950<30, name("Using slum2 for all Urb $\leq$ 30\%")
 calc_pop if urbrate1950<40, name("Using slum2 for all Urb $\leq$ 40\%")
+
+*****************************************************************
+* Calculate stats for rich countries
+* - Replace slum shares with 1% for those missing slum shares
+*****************************************************************
+clear
+use "./work/jv_data_fit_robust.dta" // contains full set of data
+
+replace slum2005 = slumoecd if oecd==1 & slum2005==.
+calc_pop if urbrate1950>40 & oecd==1, name("Urb $\geq$ 40\%")
+calc_pop if urbrate1950>50 & oecd==1, name("Urb $\geq$ 50\%")
+calc_pop if urbrate1950>60 & oecd==1, name("Urb $\geq$ 60\%")
+
 
 
 capture file close f_text

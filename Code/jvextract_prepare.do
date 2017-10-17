@@ -20,7 +20,7 @@
 	egen country_id = group(country)
 	
 	// Set baseline slum shares for rich countries so they can be included
-	replace slum = 1 if slum==. & oecd==1 & year==2005 // 1% slum shares for oecd
+	gen slumoecd = 1 // for use in replacing slum shares for rich countries in the OECD
 	replace slum = 95 if country=="Sierra Leone" & year==2005 // replace 100%
 		
 	// Calculate maximum slum share
