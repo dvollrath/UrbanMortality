@@ -126,53 +126,7 @@ function mcrobust(Cal,time,Setup,name)
     mcrobusti(Alt,time,T,name,f,count,n);
     n = n + 1;
 
-    Alt = Setup;
-    Alt.Epsilon = [.5; .5; 1];
-    name = 'Rural elasticity $\epsilon_r = 1.0$';
-    mcrobusti(Alt,time,T,name,f,count,n);
-    n = n + 1;
-
-    Alt = Setup;
-    Alt.Epsilon = [.5; .5; 1.6];
-    name = 'Rural elasticity $\epsilon_r = 1.6$';
-    mcrobusti(Alt,time,T,name,f,count,n);
-    n = n + 1;
-
-    Alt = Setup;
-    Alt.Epsilon = [.5; .5; .6];
-    name = 'Rural elasticity $\epsilon_r = .6$';
-    mcrobusti(Alt,time,T,name,f,count,n);
-    n = n + 1;
-
-    Alt = Setup;
-    Alt.Epsilon = [.5; .5; .6];
-    Alt.Fertility = [-.3; -.3; 1];
-    Alt.Tau = [0; 0; 0];
-    name = 'Rural elas $\epsilon_r = .6$ and endog fert.';
-    mcrobusti(Alt,time,T,name,f,count,n);
-    n = n + 1;
-
-    Alt = Setup;
-    Alt.Epsilon = [.5; .5; .4];
-    name = 'Rural elasticity $\epsilon_r = .4$';
-    mcrobusti(Alt,time,T,name,f,count,n);
-    n = n + 1;
-
-    Alt = Setup;
-    Alt.Epsilon = [.5; .5; .4];
-    Alt.Fertility = [-.3; -.3; 1];
-    Alt.Tau = [0; 0; 0];
-    name = 'Rural elas $\epsilon_r = .4$ and endog fert.';
-    mcrobusti(Alt,time,T,name,f,count,n);
-    n = n + 1;
-
-    Alt = Setup;
-    Alt.Epsilon = [.5; .5; .6];
-    Alt.Growth = [.04; .025; .025];
-    name = 'Formal growth $G_f = 0.04$ and rural elas = .6';
-    mcrobusti(Alt,time,T,name,f,count,n);
-    n = n + 1;
-
+  
     % Close main robustness file for table
     fclose(f);
 end

@@ -47,9 +47,8 @@ mctable5(fitted,Setup,Targets,name); % policy counterfactuals
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Peform individual calibrations by country
-% - Returns mean and median elasticities from countries
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[Emean,Emedian] = mcindividual(Setup,time,name);
+%mcindividual(Setup,time,name);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Run for historical rich countries
@@ -59,4 +58,4 @@ mctable5(fitted,Setup,Targets,name); % policy counterfactuals
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Run with alternative elasticities
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-mcelastic(fitted,Setup,name,Targets,time,Emean,Emedian)
+%mcelastic(fitted,Setup,name,Targets,time)

@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Calibrate model to individual country data
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function mcindividual(Setup,time,name)
+function [Emean,Emedian] = mcindividual(Setup,time,name)
     
     % Open and read calibration targets and initial values from file
     f = fopen('../Work/jvextract_individual.txt','r');
@@ -95,4 +95,6 @@ function mcindividual(Setup,time,name)
     
     fclose(f);  
 
+    Emean = mean(Eps);
+    Emedian = median(Eps);
 end
