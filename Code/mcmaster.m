@@ -43,7 +43,7 @@ options = optimset('MaxFunEvals',5000); % allow for enough iterations
 mctable2(fitted,Setup,name); % calibration parameters
 mctable3(fitted,Setup,time,Targets,name); % comparison of scenarios
 mctable5(fitted,Setup,Targets,name); % policy counterfactuals
-%mcrobust(Cal,time,Setup,name); % perform robustness checks
+mcrobust(Cal,time,Setup,name); % perform robustness checks
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Peform individual calibrations by country
@@ -58,4 +58,4 @@ mctable5(fitted,Setup,Targets,name); % policy counterfactuals
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Run with alternative elasticities
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-mcelastic(fitted,Setup,name,Targets,time)
+%mcelastic(fitted,Setup,name,Targets,time)
