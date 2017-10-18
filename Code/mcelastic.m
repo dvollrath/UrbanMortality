@@ -30,7 +30,7 @@ function mcelastic(fitted,Setup,name,T,time,Emean,Emedian)
     fitted(2) = Emedian(2);
     mcrobusth(Setup,time,fitted,name,f,n);
     
-    fprintf(f,'\\multicolumn{7}{l}{Alternative rural elasticities:} \\\\ \n');
+    fprintf(f,'\\multicolumn{7}{l}{Alternative rural elasticities, calibrating formal and informal elasticities:} \\\\ \n');
 
     % Run results calibrating to a given rural elasticity
     n= n + 1;
@@ -44,9 +44,15 @@ function mcelastic(fitted,Setup,name,T,time,Emean,Emedian)
     Alt = Setup;
     Alt.Epsilon = [0.5; 0.5; 1.0];
     mcrobustg(Alt,time,T,name,f,n);
-        
+
     n= n + 1;
-    name = 'Rural elasticity inferred from literature:';
+    name = 'Rural elasticity from factor shares:';
+    Alt = Setup;
+    Alt.Epsilon = [0.5; 0.5; Shares(3)];
+    mcrobustg(Alt,time,T,name,f,n);
+    
+    n= n + 1;
+    name = 'Rural elasticity from factor shares and housing:';
     Alt = Setup;
     Alt.Epsilon = [0.5; 0.5; Shares(3) + Housing(3) + Amenities(3)];
     mcrobustg(Alt,time,T,name,f,n);
@@ -54,7 +60,7 @@ function mcelastic(fitted,Setup,name,T,time,Emean,Emedian)
     fprintf(f,'\\multicolumn{7}{l}{Alternatives for all elasticities:} \\\\ \n');
     
     n = n+1;
-    name = 'All elasticities inferred from literature, no amenities:';
+    name = 'All elasticities inferred from factor shares, housing, agglom.:';
     Alt = Setup;
     Alt.Epsilon = Shares + Agglomeration + Housing;
     fitted(1) = Alt.Epsilon(1);
@@ -62,20 +68,17 @@ function mcelastic(fitted,Setup,name,T,time,Emean,Emedian)
     mcrobusth(Alt,time,fitted,name,f,n);
 
     n = n+1;
-    name = 'Make informal elasticity as high as plausible:';
+    name = 'Increase informal elasticity by 0.25:';
     Alt = Setup;
     Alt.Epsilon = Shares + Agglomeration + Housing + Amenities;
     fitted(1) = Alt.Epsilon(1);
     fitted(2) = Alt.Epsilon(2);
     mcrobusth(Alt,time,fitted,name,f,n);
+  
     
+    %{
     fprintf(f,'\\multicolumn{7}{l}{Other results:} \\\\ \n');
 
-    n= n + 1;
-    name = 'Rural elasticity inferred from share:';
-    Alt = Setup;
-    Alt.Epsilon = [0.5; 0.5; Shares(3)];
-    mcrobustg(Alt,time,T,name,f,n);
 
     n= n + 1;
     name = 'Rural elasticity inferred from share, house:';
@@ -106,7 +109,7 @@ function mcelastic(fitted,Setup,name,T,time,Emean,Emedian)
     fitted(1) = Alt.Epsilon(1);
     fitted(2) = Alt.Epsilon(2);
     mcrobusth(Alt,time,fitted,name,f,n);
-
+%}
         
     fclose(f); 
 

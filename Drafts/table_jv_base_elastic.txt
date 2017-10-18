@@ -1,17 +1,12 @@
-        1. Baseline &     1.200 &     1.293 &     0.640 &      -9.4 &      -8.5 &      1.09 &      0.20 \\ 
+        1. Baseline &     1.200 &     1.293 &     0.640 &      -9.4 &      -8.5 &      1.09 \\ 
 \multicolumn{7}{l}{Calibrating to each individual country:} \\ 
-        2. Mean elasticities &     1.200 &     1.763 &     0.687 &      -7.7 &      -8.3 &      1.09 &     -6.25 \\ 
-        3. Median elasticities &     1.200 &     1.407 &     0.647 &      -9.0 &      -8.6 &      1.09 &     -1.53 \\ 
-\multicolumn{7}{l}{Alternative rural elasticities:} \\ 
-        4. Higher value from Lee &     1.600 &     1.500 &     0.813 &      -8.2 &      -6.8 &      1.15 &      0.20 \\ 
-        5. Lower value from Lee &     1.000 &     1.189 &     0.553 &     -10.2 &      -9.8 &      1.06 &      0.20 \\ 
-        6. Rural elasticity inferred from literature: &     0.760 &     1.064 &     0.449 &     -11.5 &     -12.1 &      1.03 &      0.20 \\ 
+        2. Mean elasticities &     1.200 &     1.763 &     0.687 &      -7.7 &      -8.3 &      1.09 \\ 
+        3. Median elasticities &     1.200 &     1.407 &     0.647 &      -9.0 &      -8.6 &      1.09 \\ 
+\multicolumn{7}{l}{Alternative rural elasticities, calibrating formal and informal elasticities:} \\ 
+        4. Higher value from Lee &     1.600 &     1.500 &     0.813 &      -8.2 &      -6.8 &      1.15 \\ 
+        5. Lower value from Lee &     1.000 &     1.189 &     0.553 &     -10.2 &      -9.8 &      1.06 \\ 
+        6. Rural elasticity from factor shares: &     0.560 &     0.960 &     0.362 &     -13.1 &     -15.3 &      1.01 \\ 
+        7. Rural elasticity from factor shares and housing: &     0.760 &     1.064 &     0.449 &     -11.5 &     -12.1 &      1.03 \\ 
 \multicolumn{7}{l}{Alternatives for all elasticities:} \\ 
-        7. All elasticities inferred from literature, no amenities: &     0.760 &     0.964 &     0.425 &     -12.9 &     -12.2 &      1.02 &      4.28 \\ 
-        8. Make informal elasticity as high as plausible: &     0.760 &     0.964 &     0.675 &      -6.9 &      -4.1 &      1.06 &     -6.65 \\ 
-\multicolumn{7}{l}{Other results:} \\ 
-        9. Rural elasticity inferred from share: &     0.560 &     0.960 &     0.362 &     -13.1 &     -15.3 &      1.01 &      0.20 \\ 
-       10. Rural elasticity inferred from share, house: &     0.760 &     1.064 &     0.449 &     -11.5 &     -12.1 &      1.03 &      0.20 \\ 
-       11. All elasticities set from share: &     0.560 &     0.600 &     0.300 &     -18.5 &     -10.3 &      0.97 &     22.95 \\ 
-       12. All elasticities set from share, agg: &     0.560 &     0.564 &     0.225 &     -21.9 &     -15.7 &      0.92 &     32.40 \\ 
-       13. All elasticities set from share, agg, house: &     0.760 &     0.964 &     0.425 &     -12.9 &     -12.2 &      1.02 &      4.28 \\ 
+        8. All elasticities inferred from factor shares, housing, agglom.: &     0.760 &     0.964 &     0.425 &     -12.9 &     -12.2 &      1.02 \\ 
+        9. Increase informal elasticity by 0.25: &     0.760 &     0.964 &     0.675 &      -6.9 &      -4.1 &      1.06 \\ 
