@@ -9,4 +9,4 @@
         7. Rural elasticity from factor shares and housing: &     0.760 &     1.064 &     0.449 &     -11.5 &     -12.1 &      1.03 \\ 
 \multicolumn{7}{l}{Alternatives for all elasticities:} \\ 
         8. All elasticities inferred from factor shares, housing, agglom.: &     0.760 &     0.964 &     0.425 &     -12.9 &     -12.2 &      1.02 \\ 
-        9. Increase informal elasticity by 0.25: &     0.760 &     0.964 &     0.675 &      -6.9 &      -4.1 &      1.06 \\ 
+        9. Increase informal elasticity by 0.20: &     0.760 &     0.964 &     0.625 &      -7.5 &      -5.3 &      1.06 \\ 

@@ -46,8 +46,8 @@ function mctable2(fitted,Setup,name)
     filename = sprintf('../Drafts/table_jv_%s_2b.txt',name);
     f = fopen(filename,'w');
     
-    fprintf(f,'Formal congestion elasticity ($\\epsilon_f$) & %9.2f & Urbanization rate in 2005 (mean 31.0\\%%) \\tabularnewline[+0.03215in] \n', fitted(1));
-    fprintf(f,'Informal congestion elasticity ($\\epsilon_l$) & %9.2f & Informal share in 2005 (mean 64.2\\%%) \\tabularnewline[+0.03215in] \n', fitted(2));
+    fprintf(f,'Formal congestion elasticity ($\\epsilon_f$) & %9.2f & Urbanization rate in 2005 (mean 31.2\\%%) \\tabularnewline[+0.03215in] \n', fitted(1));
+    fprintf(f,'Informal congestion elasticity ($\\epsilon_l$) & %9.2f & Informal share in 2005 (mean 62.2\\%%) \\tabularnewline[+0.03215in] \n', fitted(2));
     
     fclose(f);
 
