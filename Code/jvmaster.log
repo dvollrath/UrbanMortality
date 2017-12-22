@@ -1,0 +1,491 @@
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+5-user Stata network perpetual license:
+       Serial number:  401406220297
+         Licensed to:  DIETRICH VOLLRATH
+                       University of Houston
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do "jvmaster.do" 
+
+. ***********************************************************
+. * Control script for replicating Jedwab and Vollrath
+. ***********************************************************
+. 
+. **** This should be changed to your master folder ****
+. cd /users/dietz/dropbox/project/megacity/UrbanMortality
+/Users/dietz/Dropbox/Project/Megacity/UrbanMortality
+
+. 
+. do "./code/jvextract_prepare.do" // merge datasets and make adjustments
+
+. *****************************************************************
+. * Prepare sample data and make adjustments to slum shares
+. *****************************************************************
+.         clear
+
+.         
+.         // Merge main data with demographics and flags for type of country
+.         use "./data/jv_data_fit.dta" // contains full set of data
+
+.         
+.         
+.         // Combine Sudan and South Sudan population data
+.         forvalues y = 1950(5)2005 {
+  2.                 summ pop if country=="South Sudan" & year==`y'
+  3.                 local south_pop = r(mean)
+  4.                 replace pop = pop + `south_pop' if country=="Sudan" & year==`y'
+  5.                 summ urbrate if country=="South Sudan" & year==`y'
+  6.                 local south_urbrate = r(mean)
+  7.                 replace urbrate = (urbrate*pop + `south_urbrate'*`south_pop')/(pop + `south_pop
+> ') if country=="Sudan" & year==`y'
+  8.         }
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+         pop |          1        2583           .       2583       2583
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     urbrate |          1       8.865           .      8.865      8.865
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+         pop |          1        2721           .       2721       2721
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     urbrate |          1       8.806           .      8.806      8.806
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+         pop |          1        2955           .       2955       2955
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     urbrate |          1       8.748           .      8.748      8.748
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+         pop |          1        3264           .       3264       3264
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     urbrate |          1        8.69           .       8.69       8.69
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+         pop |          1        3647           .       3647       3647
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     urbrate |          1       8.633           .      8.633      8.633
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+         pop |          1        4117           .       4117       4117
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     urbrate |          1       8.576           .      8.576      8.576
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+         pop |          1        4701           .       4701       4701
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     urbrate |          1       8.519           .      8.519      8.519
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+         pop |          1        5445           .       5445       5445
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     urbrate |          1       9.844           .      9.844      9.844
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+         pop |          1        5762           .       5762       5762
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     urbrate |          1      13.276           .     13.276     13.276
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+         pop |          1        5453           .       5453       5453
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     urbrate |          1      15.873           .     15.873     15.873
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+         pop |          1        6693           .       6693       6693
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     urbrate |          1      16.504           .     16.504     16.504
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+         pop |          1        8100           .       8100       8100
+(1 real change made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     urbrate |          1      17.154           .     17.154     17.154
+(1 real change made)
+
+.         drop if country=="South Sudan" // eliminate these observations
+(14 observations deleted)
+
+.         
+.         // Merge other data sources
+.         qui merge 1:1 country year using "./data/cbdcdrcrni.dta" // demographics
+
+.         drop _merge
+
+.         qui merge m:1 country using "./data/jv_flags.dta" // flags for sets of countries
+
+.         drop _merge
+
+.         
+.         // Drop unneeded variables
+.         capture drop pop50
+
+.         capture drop pop1950
+
+.         capture drop gr
+
+.         capture drop Countrycode // incomplete and redundant
+
+.         
+.         // Create country ID
+.         egen country_id = group(country)
+
+.         
+.         // Set baseline slum shares for rich countries so they can be included
+.         gen slumoecd = 1 // for use in replacing slum shares for rich countries in the OECD
+
+.         replace slum = 95 if country=="Sierra Leone" & year==2005 // replace 100%
+(1 real change made)
+
+.                 
+.         // Calculate maximum slum share
+.         bysort country: egen slummax = max(slum)
+(1846 missing values generated)
+
+.         
+.         // Reshape to wide
+.         reshape wide urbrate slum slum2 crni crni2 cbr cdr pop improv_sani improv_water, i(country
+> _id) j(year)
+(note: j = 1950 1955 1960 1965 1970 1975 1980 1985 1990 1995 2000 2005 2010 2015)
+
+Data                               long   ->   wide
+-----------------------------------------------------------------------------
+Number of obs.                     3260   ->     233
+Number of variables                  18   ->     147
+j variable (14 values)             year   ->   (dropped)
+xij variables:
+                                urbrate   ->   urbrate1950 urbrate1955 ... urbrate2015
+                                   slum   ->   slum1950 slum1955 ... slum2015
+                                  slum2   ->   slum21950 slum21955 ... slum22015
+                                   crni   ->   crni1950 crni1955 ... crni2015
+                                  crni2   ->   crni21950 crni21955 ... crni22015
+                                    cbr   ->   cbr1950 cbr1955 ... cbr2015
+                                    cdr   ->   cdr1950 cdr1955 ... cdr2015
+                                    pop   ->   pop1950 pop1955 ... pop2015
+                            improv_sani   ->   improv_sani1950 improv_sani1955 ... improv_sani2015
+                           improv_water   ->   improv_water1950 improv_water1955 ... improv_water201
+> 5
+-----------------------------------------------------------------------------
+
+.         
+.         // Drop if small population - this condition has not changed - so make permanent
+.         keep if pop1950>1000
+(99 observations deleted)
+
+.         save "./work/jv_data_fit_robust.dta", replace
+file ./work/jv_data_fit_robust.dta saved
+
+. 
+end of do-file
+
+. do "./code/jvextract_robust.do" // write summary stats for different samples
+
+. *****************************************************************
+. * Calculate averages for different samples for use in calibration
+. *****************************************************************
+.         
+. *****************************************************************
+. * Declare program to calculate appropriate averages for a given
+. * sample. This will be called repeatedly below.
+. *****************************************************************
+. capture program drop calc_pop
+
+. program calc_pop
+  1.         syntax [if] [, name(string) initinf(real 0.5) ind(int 0)]
+  2.         preserve
+  3.         quietly {
+  4.                 keep `if' // keep based on given conditions
+  5.                 keep if !missing(urbrate2005)
+  6.                 keep if !missing(slum2005)
+  7.                 keep if !missing(urbrate1950)
+  8.                 
+.                 summ urbrate2005
+  9.                 local c_urb = r(mean)/100 // save mean urban rate 2005
+ 10.                 summ slum2005
+ 11.                 local c_inf = r(mean)/100 // save mean informal rate 2005
+ 12.                 summ urbrate1950
+ 13.                 local i_for = (1-`initinf')*r(mean)/100 // set initial formal rate 1950
+ 14.                 local i_inf = `initinf'*r(mean)/100 // set initial informal rate 1950
+ 15.                 local i_rur = 1 - r(mean)/100 // set initial rural rate 1950
+ 16.         
+.                 gen rurbpop2005 = pop2005*urbrate2005/(pop1950*urbrate1950) // relative urban pop
+ 17.                 ameans rurbpop2005
+ 18.                 local r_urb = r(mean_g) // get geometric mean of relative urban pop
+ 19.                 gen rinfpop2005 = pop2005*urbrate2005*slum2005/(pop1950*urbrate1950*`initinf'*1
+> 00) // relative informal pop
+ 20.                 ameans rinfpop2005
+ 21.                 local r_inf = r(mean_g) // get geometric mean of relative informal pop
+ 22.                 gen rrurpop2005 = pop2005*(1-urbrate2005/100)/(pop1950*(1-urbrate1950/100)) // 
+> relative rural pop
+ 23.                 ameans rrurpop2005
+ 24.                 local r_rur = r(mean_g) // get geometric mean of relative rural pop
+ 25. 
+.                 count
+ 26.                 local c = r(N) // get count of countries included
+ 27.                 
+.                 // Save country level data if asked
+.                 if `ind'==1 {
+ 28.                         save "./work/jv_data_fit_sample.dta", replace
+ 29.                 }
+ 30.                 
+.                 // Reshape to long and calculate fertility parameters
+.                 reshape long urbrate slum slum2 crni crni2 cbr cdr pop improv_sani improv_water, i
+> (country_id) j(year)
+ 31.                 bysort year: egen crnimean = mean(crni) // get mean CRNI by year
+ 32.                 gen t = year - 1950 // rebase time
+ 33.                 gen tsq = t^2
+ 34.                 reg crnimean t tsq // regress CRNI on time and time-squared to get quadratic co
+> efficients
+ 35.                 local tau1 = _b[t] // save coefficients
+ 36.                 local tau2 = _b[tsq]
+ 37.                 
+.                 // Write saved results to output file for use in Matlab
+.                 file write f_text "`name', `c', " %9.4f (`c_urb') "," %9.4f (`c_inf') "," %9.4f (`
+> i_for') "," %9.4f (`i_inf') ///
+>                         "," %9.4f (`i_rur') "," %9.4f (`r_urb') "," %9.4f (`r_inf') "," %9.4f (`r_
+> rur') "," %9.4f (`tau1') "," %9.4f (`tau2') _n
+ 38.         }
+ 39.         restore
+ 40. end
+
+. 
+. 
+. *****************************************************************
+. * Open output file for summary stats used by Matlab
+. *****************************************************************
+. capture file close f_text
+
+. file open f_text using "./work/jvextract_robust.txt", write replace
+
+. 
+. *****************************************************************
+. * Calculate stats for baseline samples and variations
+. * - These use the slum variable directly
+. *****************************************************************
+. clear
+
+. use "./work/jv_data_fit_robust.dta" // contains full set of data
+
+. 
+. calc_pop if urbrate1950<20, name("Baseline") ind(1) // Baseline sample saves
+
+. calc_pop if slummax>30 & urbrate1950<20, name("Slum max $\geq$ 30\% Urb $\leq$ 20\%")
+
+. calc_pop if slummax>20 & urbrate1950<20, name("Slum max $\geq$ 20\% Urb $\leq$ 20\%")
+
+. calc_pop if slummax>10 & urbrate1950<20, name("Slum max $\geq$ 10\% Urb $\leq$ 20\%")
+
+. calc_pop if slummax>0 & urbrate1950<30, name("Slum max $\geq$ 0\% Urb rate $\leq$ 30\%")
+
+. calc_pop if slummax>0 & urbrate1950<40, name("Slum max $\geq$ 0\% Urb rate $\leq$ 40\%")
+
+. calc_pop if slummax>0 & urbrate1950<50, name("Slum max $\geq$ 0\% Urb rate $\leq$ 50\%")
+
+. calc_pop if slummax>30 & urbrate1950<30, name("Slum max $\geq$ 30\% Urb $\leq$ 30\%")
+
+. calc_pop if slummax>30 & urbrate1950<40, name("Slum max $\geq$ 30\% Urb $\leq$ 40\%")
+
+. calc_pop if cdr1980-cdr1950<=-7 & oecd==0, name("$\Delta CDR_{50-80} \leq -7$")
+
+. calc_pop if cdr1980-cdr1950<=-12 & oecd==0, name("$\Delta CDR_{50-80} \leq -12$")
+
+. calc_pop if cdr1980-cdr1950<=-16 & oecd==0, name("$\Delta CDR_{50-80} \leq -16$")
+
+. calc_pop if urbrate1950<20 & country~="China" & country~="India", name("ex-China and India")
+
+. calc_pop if urbrate1950<20 & communist==0, name("ex-Communist")
+
+. 
+. *****************************************************************
+. * Calculate stats using expanded slum information
+. * - Use slum2 in place of missing slum data
+. *****************************************************************
+. clear
+
+. use "./work/jv_data_fit_robust.dta" // contains full set of data
+
+. 
+. replace slum2005 = slum22005 if slum2005==. // replace with slum2 for missing slum obs
+(63 real changes made)
+
+. calc_pop if urbrate1950<20, name("Using slum2 for miss Urb $\leq$ 20\%")
+
+. calc_pop if urbrate1950<30, name("Using slum2 for miss Urb $\leq$ 30\%")
+
+. calc_pop if urbrate1950<40, name("Using slum2 for miss Urb $\leq$ 40\%")
+
+. 
+. *****************************************************************
+. * Calculate stats using only slum2 information
+. * - Use slum2 ONLY
+. *****************************************************************
+. clear
+
+. use "./work/jv_data_fit_robust.dta" // contains full set of data
+
+. 
+. replace slum2005 = slum22005 // replace with slum2 for everyone
+(131 real changes made)
+
+. calc_pop if urbrate1950<20, name("Using slum2 for all Urb $\leq$ 20\%")
+
+. calc_pop if urbrate1950<30, name("Using slum2 for all Urb $\leq$ 30\%")
+
+. calc_pop if urbrate1950<40, name("Using slum2 for all Urb $\leq$ 40\%")
+
+. 
+. *****************************************************************
+. * Calculate stats for rich countries
+. * - Replace slum shares with 1% for those missing slum shares
+. *****************************************************************
+. clear
+
+. use "./work/jv_data_fit_robust.dta" // contains full set of data
+
+. 
+. replace slum2005 = slumoecd if oecd==1 & slum2005==.
+(29 real changes made)
+
+. calc_pop if urbrate1950>40 & oecd==1, name("Urb $\geq$ 40\%")
+
+. calc_pop if urbrate1950>50 & oecd==1, name("Urb $\geq$ 50\%")
+
+. calc_pop if urbrate1950>60 & oecd==1, name("Urb $\geq$ 60\%")
+
+. 
+. 
+. 
+. capture file close f_text
+
+. 
+end of do-file
+
+. do "./code/jvextract_ind.do" // get stats for ind. countries
+
+. ***********************************************************
+. * Select individual countries for use in calibration
+. ***********************************************************
+.         clear
+
+.         
+.         capture file close f_result
+
+.         file open f_result using "./work/jvextract_individual.txt", write replace
+
+.         
+.         use "./work/jv_data_fit_sample.dta" // contains all the countries
+
+.         
+.         replace country = subinstr(country,"'","",.)
+(2 real changes made)
+
+.         
+.         local i = 1
+
+.         
+.         levelsof country // get all id numbers
+`"Angola"' `"Bangladesh"' `"Benin"' `"Burkina Faso"' `"Burundi"' `"Cambodia"' `"Cameroon"' `"Central
+>  African Republic"' `"Chad"' `"China"' `"Côte dIvoire"' `"Democratic Republic of the Congo"' `"Eth
+> iopia"' `"Ghana"' `"Guinea"' `"Haiti"' `"Honduras"' `"India"' `"Indonesia"' `"Kenya"' `"Lao People
+> s Democratic Republic"' `"Madagascar"' `"Malawi"' `"Mali"' `"Mozambique"' `"Myanmar"' `"Nepal"' `"
+> Niger"' `"Nigeria"' `"Pakistan"' `"Rwanda"' `"Senegal"' `"Sierra Leone"' `"Somalia"' `"Sudan"' `"T
+> hailand"' `"Togo"' `"Uganda"' `"United Republic of Tanzania"' `"Viet Nam"' `"Yemen"' `"Zambia"' `"
+> Zimbabwe"'
+
+.         foreach j in `r(levels)' { // loop through all values
+  2.                 // Urbanization rates
+.                 qui summ urbrate1950 if country=="`j'"
+  3.                 local base_urbrate = r(mean)/100
+  4.                 qui summ urbrate2005 if country=="`j'"
+  5.                 local comp_urbrate = r(mean)/100
+  6.                 qui summ slum2005 if country=="`j'"
+  7.                 local comp_slum = r(mean)/100
+  8.                 
+.                 if `comp_urbrate'~=. & `comp_slum'~=. {
+  9.                         file write f_result "`j',1," %9.4f (`comp_urbrate') "," %9.4f (`comp_sl
+> um') "," %9.4f (.5*`base_urbrate') "," %9.4f (.5*`base_urbrate') ///
+>                                                 "," %9.4f (1-`base_urbrate') _n
+ 10.                         local i = `i' + 1
+ 11.                 }
+ 12.         } // end foreach loop
+
+.         
+.         file close f_result
+
+.         
+. 
+end of do-file
+
+. 
+end of do-file
